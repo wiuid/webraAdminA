@@ -1,0 +1,39 @@
+server:
+  port: 81
+spring:
+  application:
+    name: webraAdminVueA
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/webra_admin_vue_a?serverTimezone=Asia/Shanghai&useSSL=false&characterEncoding=UTF-8&useUnicode=true
+    username: root
+    password: 123qwe
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  security:
+    user:
+      name: root
+      password: 123qwe
+
+#  resources:
+#    static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+# mybatis 配置
+mybatis-plus:
+  type-aliases-package: top.webra.pojo
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+logging:
+  level:
+    top:
+      webra:
+        mapper: debug
+
+file-path:
+  win: E:\images\imageService\
+  lin: /user/image/
+
+#jwt:
+#  config:
+#    key: glWT4H&aPinuzJQKGtUkv@76lkewebra
+#    # 10800000毫秒，3小时
+#    timeout: 10800000

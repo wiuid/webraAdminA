@@ -1,0 +1,17 @@
+top\webra\mapper\AuthMapper.class
+top\webra\pojo\Inform.class
+top\webra\mapper\LogMapper.class
+top\webra\pojo\Auth.class
+top\webra\mapper\UserMapper.class
+top\webra\pojo\User.class
+top\webra\bean\ResponseBean.class
+top\webra\pojo\Role.class
+top\webra\mapper\UpdateLogMapper.class
+top\webra\mapper\InformMapper.class
+top\webra\pojo\UpdateLog.class
+top\webra\pojo\Log.class
+top\webra\mapper\PostMapper.class
+top\webra\mapper\RoleMapper.class
+top\webra\pojo\Department.class
+top\webra\mapper\DepartmentMapper.class
+top\webra\pojo\Post.class

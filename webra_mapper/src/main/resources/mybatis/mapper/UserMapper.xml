@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.webra.mapper.UserMapper">
+
+    <resultMap type="User" id="userResult">
+        <id     property="id"           column="id"           />
+        <result property="username"     column="username"     />
+        <result property="nickname"     column="nickname"     />
+        <result property="password"     column="password"     />
+        <result property="departmentId" column="department_id"/>
+        <result property="postId"       column="post_id"      />
+        <result property="roleId"       column="role_id"      />
+        <result property="phone"        column="phone"        />
+        <result property="email"        column="email"        />
+        <result property="state"        column="state"        />
+        <result property="remark"       column="remark"       />
+        <result property="createTime"   column="create_time"  />
+        <result property="updateTime"   column="update_time"  />
+
+        <result property="departmentTitle"   column="departmentTitle"   />
+    </resultMap>
+
+
+    <select id="getUserList" resultMap="userResult">
+        select wra_user.id,wra_user.username,wra_user.nickname,wra_user.phone,wra_user.state,wra_user.create_date,d.title as departmentTitle
+        from `wra_user`
+        left join `wra_department` d on d.id = `wra_user`.department_id
+        <where>
+            <if test="departmentIds != null">
+                `wra_user`.department_id in
+                <foreach collection="departmentIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="username != null and username != ''">AND `wra_user`.username like '%${username}%'</if>
+            <if test="phone != null">AND `wra_user`.phone like '%${phone}%'</if>
+            <if test="state != null"> AND `wra_user`.`state`=#{state}</if>
+            <if test="createDateStart != null and createDateStart != ''">
+                AND `wra_user`.create_date between #{createDateStart} and #{createDateEnd}
+            </if>
+        </where>
+        order by create_date asc
+    </select>
+
+    <select id="getUser" resultMap="userResult">
+        select wra_user.id,wra_user.username,wra_user.nickname,wra_user.department_id,wra_user.post_id,wra_user.role_id,wra_user.phone,wra_user.email,wra_user.state,wra_user.remark
+        form `wra_user`
+        where `wra_user`.id = #{id}
+        limit 1
+    </select>
+
+</mapper>
