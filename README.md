@@ -19,16 +19,17 @@
 - 服务监控
 - 岗位管理
 - 公告管理
+- 等等
 
-![img.png](ReadImages/home.png)
+![home.png](ReadImages/home.png)
 
-![img.png](ReadImages/inform.png)
+![inform.png](ReadImages/inform.png)
 
-![img.png](ReadImages/department.png)
+![department.png](ReadImages/department.png)
 
-![img_1.png](ReadImages/monitoring.png)
+![monitoring.png](ReadImages/monitoring.png)
 
-![img_2.png](ReadImages/auth.png)
+![auth.png](ReadImages/auth.png)
 
 
 
