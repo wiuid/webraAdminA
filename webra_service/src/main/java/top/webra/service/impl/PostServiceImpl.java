@@ -194,11 +194,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public void exportPosts(HttpServletResponse response) {
         try {
-            File excel = ResourceUtils.getFile("classpath:static/excel/templateExportPost.xls");
-            FileInputStream fileInputStream = new FileInputStream(excel);
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("classpath:static/excel/templateExportPost.xls");
             List<Post> posts = postMapper.selectList(new QueryWrapper<>());
             // 根据模板创建一个工作簿
-            HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
+            HSSFWorkbook workbook = new HSSFWorkbook(resourceAsStream);
             // 获取该工作簿的第一个工作表
             HSSFSheet sheet = workbook.getSheetAt(0);
             // 设置列宽

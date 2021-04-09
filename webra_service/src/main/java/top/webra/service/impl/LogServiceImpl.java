@@ -12,15 +12,13 @@ import org.springframework.util.ResourceUtils;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.LogMapper;
 import top.webra.pojo.Log;
-import top.webra.pojo.Post;
 import top.webra.service.LogService;
 import top.webra.util.CastUtil;
 import top.webra.util.JwtUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -100,11 +98,12 @@ public class LogServiceImpl implements LogService {
     @Override
     public void exportLog(String token, HttpServletResponse response) {
         try {
-            File excel = ResourceUtils.getFile("classpath:static/excel/templateExportLog.xls");
-            FileInputStream fileInputStream = new FileInputStream(excel);
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("static/excel/templateExportLog.xls");
+//            File excel = ResourceUtils.getFile("classpath:static/excel/templateExportLog.xls");
+//            FileInputStream fileInputStream = new FileInputStream(excel);
             List<Log> logs = logMapper.selectList(new QueryWrapper<>());
             // 根据模板创建一个工作簿
-            HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
+            HSSFWorkbook workbook = new HSSFWorkbook(resourceAsStream);
             // 获取该工作簿的第一个工作表
             HSSFSheet sheet = workbook.getSheetAt(0);
             // 设置列宽

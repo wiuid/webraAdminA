@@ -23,6 +23,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -240,11 +241,12 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public void exportRoles(HttpServletResponse response) {
         try {
-            File excel = ResourceUtils.getFile("classpath:static/excel/templateExportRole.xls");
-            FileInputStream fileInputStream = new FileInputStream(excel);
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("classpath:static/excel/templateExportRole.xls");
+//            File excel = ResourceUtils.getFile("classpath:static/excel/templateExportRole.xls");
+//            FileInputStream fileInputStream = new FileInputStream(excel);
             List<Role> roles = roleMapper.selectList(new QueryWrapper<>());
             // 根据模板创建一个工作簿
-            HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
+            HSSFWorkbook workbook = new HSSFWorkbook(resourceAsStream);
             // 获取该工作簿的第一个工作表
             HSSFSheet sheet = workbook.getSheetAt(0);
             // 设置列宽
