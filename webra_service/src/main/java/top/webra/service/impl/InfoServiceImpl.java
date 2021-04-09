@@ -154,13 +154,13 @@ public class InfoServiceImpl implements InfoService {
                 if (avatar.equals("/assets/images/touxiang.gif")){
                     imgName = System.currentTimeMillis()+".jpg";
                 }else {
-                    imgName = avatar.replaceFirst("/image/","");
+                    imgName = avatar.replaceFirst("/api/image/","");
                 }
 
                 String os = System.getProperty("os.name");
                 String path = os.toLowerCase().startsWith("win")?winPath:linPath;
 
-                String imgUrl = "/image/"+imgName;
+                String imgUrl = "/api/image/"+imgName;
                 String filepath =path +imgName;
                 File file  = new File(filepath);
                 if(file.exists()){
@@ -170,7 +170,7 @@ public class InfoServiceImpl implements InfoService {
                 fos.write(b);
                 fos.flush();
                 fos.close();
-                int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("avatar", "/api" + imgUrl));
+                int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("avatar", imgUrl));
                 if (update == 1){
                     responseBean.buildOkMsg("修改头像成功，刷新即可");
                 }else {
