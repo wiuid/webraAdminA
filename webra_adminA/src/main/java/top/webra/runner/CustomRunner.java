@@ -3,6 +3,7 @@ package top.webra.runner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
@@ -13,6 +14,7 @@ import java.io.File;
  * @Create: 2021/4/7 21:04
  * @Description: 启动完全启动前的一些准备
  */
+@Component
 public class CustomRunner implements ApplicationRunner {
     @Value("${file-path.win}")
     private String winPath;
