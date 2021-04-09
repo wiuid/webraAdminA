@@ -42,7 +42,6 @@ public class MonitoringController {
     @PreAuthorize("hasRole('ROLE_monitoring')")
     @GetMapping
     public ResponseBean getTableDate(){
-        log.info(new Date() + "调用一次");
         Map<String, String> cpuInfo = monitoringService.getCpuInfo();
         Map<String, String> memoryInfo = monitoringService.getMemoryInfo();
         Map<String, String> diskInfo = monitoringService.getDiskInfo();

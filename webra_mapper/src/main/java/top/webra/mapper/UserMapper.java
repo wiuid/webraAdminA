@@ -19,7 +19,8 @@ import java.util.List;
 @Component
 public interface UserMapper extends BaseMapper<User> {
 
-    List<User> getUserList(@Param("departmentIds") List<Integer> departmentIds,
+    List<User> getUserList(@Param("id") Integer id,
+                       @Param("departmentIds") List<Integer> departmentIds,
                        @Param("username") String username,
                        @Param("phone") Integer phone,
                        @Param("state") Integer state,

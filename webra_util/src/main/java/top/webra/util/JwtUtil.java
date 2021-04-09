@@ -114,14 +114,18 @@ public class JwtUtil {
     }
     // 解析token 获取 用户权限集合
     public static List<Integer> getRoles(String token){
-        Claims claims = getClaims(token);
-        String stringRoles = claims.get("roles").toString();
+        String stringRoles = getStringRoles(token);
         List<String> authIdsList= Arrays.asList(stringRoles .split(",")).stream().map(s -> (s.trim())).collect(Collectors.toList());
         List<Integer> authIds = new ArrayList<>();
         for (String s : authIdsList) {
             authIds.add(Integer.valueOf(s));
         }
         return authIds;
+    }
+    // 解析token 获取 用户权限集合
+    public static String getStringRoles(String token){
+        Claims claims = getClaims(token);
+        return claims.get("roles").toString();
     }
 
 }

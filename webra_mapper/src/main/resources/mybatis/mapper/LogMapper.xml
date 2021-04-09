@@ -15,9 +15,9 @@
         select id,title,username,text,create_date
         from wra_log
         <where>
-            <if test="title != null and title != ''">title like '%${title}%'</if>
+            <if test="title != null and title != ''">title like concat('%',#{title},'%')</if>
             <if test="createDateStart != null and createDateStart != ''">
-                AND `wra_user`.create_date between #{createDateStart} and #{createDateEnd}
+                AND `wra_log`.create_date between #{createDateStart} and #{createDateEnd}
             </if>
         </where>
         order by create_date desc

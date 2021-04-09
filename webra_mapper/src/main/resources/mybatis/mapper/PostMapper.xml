@@ -18,7 +18,7 @@
         select id,title,serial,`state`,remark,create_date
         from wra_post
         <where>
-            <if test="title != null and title != ''">title like '%${title}%'</if>
+            <if test="title != null and title != ''">title like concat('%',#{title},'%')</if>
             <if test="state != null">AND `state` = #{state}</if>
         </where>
         order by serial

@@ -1,5 +1,6 @@
 package top.webra.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import oshi.SystemInfo;
@@ -77,9 +78,15 @@ public class MonitoringServiceImpl implements MonitoringService {
         HardwareAbstractionLayer hal = new SystemInfo().getHardware();
         List<HWDiskStore> diskStores = hal.getDiskStores();
         HashMap<String, String> map = new HashMap<>();
+        map.put("partitions", JSON.toJSONString(diskStores));
 
-        HWDiskStore hwDiskStore = diskStores.get(0);
-        map.put("partitions", hwDiskStore.getPartitions().toString());
+//        String os = System.getProperty("os.name");
+//        if (os.toLowerCase().startsWith("win")) {
+//            HWDiskStore hwDiskStore = diskStores.get(0);
+//            map.put("partitions", hwDiskStore.getPartitions().toString());
+//        }else {
+//            map.put("partitions", diskStores.toString());
+//        }
         return map;
     }
     /**

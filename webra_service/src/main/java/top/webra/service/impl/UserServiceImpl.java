@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.webra.bean.ResponseBean;
+import top.webra.mapper.DepartmentMapper;
 import top.webra.mapper.InformMapper;
 import top.webra.mapper.UserMapper;
+import top.webra.pojo.Department;
 import top.webra.pojo.Inform;
 import top.webra.pojo.User;
 import top.webra.service.UserService;
@@ -38,13 +41,13 @@ public class UserServiceImpl implements UserService {
     private ResponseBean responseBean;
     @Autowired
     private InformMapper informMapper;
-
+    @Autowired
+    private DepartmentMapper departmentMapper;
     @Autowired
     private DepartmentServiceImpl departmentService;
 
     @Autowired
     private LogServiceImpl logService;
-
 
     /**
      *
@@ -56,24 +59,65 @@ public class UserServiceImpl implements UserService {
      * @param createDateEnd     创建结束范围
      * @param page              页码
      */
-    public ResponseBean getUserList(Integer departmentId, String username, Integer phone, Integer state, String createDateStart, String createDateEnd, Integer page) {
+    public ResponseBean getUserList(String token, Integer departmentId, String username, Integer phone, Integer state, String createDateStart, String createDateEnd, Integer page) {
+        // 参数处理
         List<Integer> departmentIds = new ArrayList<>();
-        // 部门参数处理
-        if (departmentId != null){
-            // 需要判该部门是否还有下级部门，将自身及下级部门的id返回成一个列表 交给 departmentIds
-            departmentService.getChildrenIds(departmentIds, departmentId);
-        }else {
-            departmentIds = null;
-        }
         // 时间参数处理
         if (!"".equals(createDateStart) && createDateStart != null){
             createDateStart = CastUtil.toDateFormat(createDateStart);
             createDateEnd = CastUtil.toDateFormat(createDateEnd);
         }
+
+        // 权限判断
+        Claims claims = JwtUtil.getClaims(token);
+        String stringRoles = claims.get("roles").toString();
+        Integer id = Integer.valueOf(claims.get("jti").toString());
+
+        // 管理全部用户
+        if (stringRoles.contains("17")) {
+            // 部门参数处理
+            if (departmentId != null){
+                // 需要判该部门是否还有下级部门，将自身及下级部门的id返回成一个列表 交给 departmentIds
+                departmentService.getChildrenIds(departmentIds, departmentId);
+            }else {
+                departmentIds = null;
+            }
+        }else if (stringRoles.contains("18")){
+            // 管理自身部门权限下的用户
+
+            Department department = departmentMapper.selectOne(new QueryWrapper<Department>().eq("user_id", id).last("limit 1"));
+            // 判断部门不为空并且
+            if (department != null){
+                // 自身权限管理下的所有部门id
+                ArrayList<Integer> ids = new ArrayList<>();
+                departmentService.getChildrenIds(ids, department.getId());
+                if (departmentId != null){
+                    if (ids.contains(departmentId)) {
+                        departmentService.getChildrenIds(departmentIds, departmentId);
+                    }else {
+                        // 查询部门id 不在自身权限下，返回空
+                        responseBean.buildOkInitNull("userList");
+                        return responseBean;
+                    }
+                }else {
+                    departmentIds = ids;
+                }
+            }else {
+                // 查询自身是18 可管理自身部门下所有用户，但是自身不是部门负责人
+                responseBean.buildOkInitNull("userList");
+                return responseBean;
+            }
+        }else {
+            // 没有权限
+            responseBean.buildOkInitNull("userList");
+            return responseBean;
+        }
+
         // 查询数据
         PageHelper.startPage(page,10);
-        List<User> userList = userMapper.getUserList(departmentIds, username, phone, state, createDateStart, createDateEnd);
+        List<User> userList = userMapper.getUserList(id, departmentIds, username, phone, state, createDateStart, createDateEnd);
         PageInfo<User> userPageInfo = new PageInfo<>(userList);
+
 
         // 整理数据并返回
         HashMap<String, Object> data = new HashMap<>();

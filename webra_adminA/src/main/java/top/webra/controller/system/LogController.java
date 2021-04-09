@@ -1,14 +1,13 @@
 package top.webra.controller.system;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import top.webra.bean.ResponseBean;
 import top.webra.service.impl.LogServiceImpl;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -20,6 +19,7 @@ import java.util.List;
  */
 @Controller
 @ResponseBody
+@PreAuthorize("hasRole('ROLE_log')")
 @RequestMapping("/system/site/log")
 public class LogController {
     @Autowired
@@ -40,31 +40,31 @@ public class LogController {
      * 删除单个日志
      * @param id 日志id
      */
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseBean deleteLog(int id){
-        return responseBean;
+        return logService.deleteLog(id);
     }
 
     /**
      * 批量删除日志
      * @param ids 日志ids列表字符串
      */
-    @PostMapping("/deletes")
-    public ResponseBean deleteLogs(List<Integer> ids){
-        return responseBean;
+    @DeleteMapping("/deletes")
+    public ResponseBean deleteLogs(@RequestHeader("token")String token, String ids){
+        return logService.deleteLogs(token, ids);
     }
     /**
      * 清空日志
      */
-    @PostMapping("/empty")
-    public ResponseBean emptyLog(){
-        return responseBean;
+    @DeleteMapping("/empty")
+    public ResponseBean emptyLog(@RequestHeader("token")String token){
+        return logService.emptyLog(token);
     }
     /**
      * 导出日志
      */
-    @PostMapping("/export")
-    public ResponseBean export(){
-        return responseBean;
+    @GetMapping("/export")
+    public void export(@RequestHeader("token")String token, HttpServletResponse response){
+        logService.exportLog(token, response);
     }
 }

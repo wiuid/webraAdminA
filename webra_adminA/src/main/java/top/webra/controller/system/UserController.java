@@ -33,8 +33,8 @@ public class UserController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping
-    public ResponseBean getTableDate(Integer departmentId, String username,Integer phone, Integer state, String createDateStart, String createDateEnd, Integer page){
-        return userService.getUserList(departmentId,username,phone,state,createDateStart,createDateEnd,page);
+    public ResponseBean getTableDate(@RequestHeader("token") String token, Integer departmentId, String username,Integer phone, Integer state, String createDateStart, String createDateEnd, Integer page){
+        return userService.getUserList(token, departmentId,username,phone,state,createDateStart,createDateEnd,page);
     }
     // 获取单用户信息
     @GetMapping("/get")
@@ -42,6 +42,7 @@ public class UserController {
     public ResponseBean getUser(Integer id){
         return userService.selectUser(id);
     }
+
     // 获取全部用户名信息 用于选择
     @GetMapping("/tree")
     public ResponseBean getUserByNickname(){

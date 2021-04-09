@@ -3,6 +3,8 @@ package top.webra.bean;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -72,6 +74,14 @@ public class ResponseBean {
         this.status = 403;
         this.msg = msg;
         this.data = null;
+    }
+
+    public void buildOkInitNull(String dataName){
+        HashMap<String, Object> data = new HashMap<>();
+        data.put(dataName, new ArrayList<Object>());
+        data.put("total",0);
+        data.put("page",1);
+        buildOk(data);
     }
 
     public static ResponseBean ok(String msg) {

@@ -30,7 +30,7 @@ logging:
 
 file-path:
   win: E:\images\imageService\
-  lin: /user/image/
+  lin: /usr/image/
 
 #jwt:
 #  config:

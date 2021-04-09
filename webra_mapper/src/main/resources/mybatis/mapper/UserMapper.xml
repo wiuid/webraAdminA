@@ -34,12 +34,13 @@
                     #{id}
                 </foreach>
             </if>
-            <if test="username != null and username != ''">AND `wra_user`.username like '%${username}%'</if>
-            <if test="phone != null">AND `wra_user`.phone like '%${phone}%'</if>
+            <if test="username != null and username != ''">AND `wra_user`.username like concat('%',#{username},'%')</if>
+            <if test="phone != null">AND `wra_user`.phone like concat('%',#{phone},'%')</if>
             <if test="state != null"> AND `wra_user`.`state`=#{state}</if>
             <if test="createDateStart != null and createDateStart != ''">
                 AND `wra_user`.create_date between #{createDateStart} and #{createDateEnd}
             </if>
+            AND `wra_user`.id != #{id}
         </where>
         order by create_date asc
     </select>

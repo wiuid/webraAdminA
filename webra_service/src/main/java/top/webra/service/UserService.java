@@ -22,7 +22,8 @@ public interface UserService {
      * @param createDateEnd     创建结束范围
      * @param page              页码
      */
-    ResponseBean getUserList(Integer departmentId,
+    ResponseBean getUserList(String token,
+                             Integer departmentId,
                              String username,
                              Integer phone,
                              Integer state,

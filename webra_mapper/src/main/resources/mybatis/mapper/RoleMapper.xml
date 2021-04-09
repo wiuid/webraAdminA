@@ -18,8 +18,8 @@
         select id,title,code,serial,state,remark,create_date,auth_ids
         from `wra_role`
         <where>
-            <if test="title != null and title != ''">title like '%${title}%'</if>
-            <if test="code != null and code != ''">AND code like '%${code}%'</if>
+            <if test="title != null and title != ''">title like concat('%',#{title},'%')</if>
+            <if test="code != null and code != ''">AND code like concat('%',#{code},'%')</if>
             <if test="state != null"> AND `state`=#{state}</if>
             <if test="createDateStart != null and createDateStart != ''">
                 AND create_date between #{createDateStart} and #{createDateEnd}

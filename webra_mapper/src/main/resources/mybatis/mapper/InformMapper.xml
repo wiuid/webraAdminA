@@ -20,7 +20,7 @@
         from `wra_inform`
         left join `wra_user` u on u.id = `wra_inform`.user_id
         <where>
-            <if test="title != null and title != ''">wra_inform.title like '%${title}%'</if>
+            <if test="title != null and title != ''">wra_inform.title like concat('%',#{title},'%')'</if>
             <if test="state != null"> AND wra_inform.`state`=#{state}</if>
             <if test="createDateStart != null and createDateStart != ''">
                 AND wra_inform.create_date between #{createDateStart} and #{createDateEnd}
