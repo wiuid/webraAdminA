@@ -21,13 +21,13 @@ spring:
 mybatis-plus:
   type-aliases-package: top.webra.pojo
   mapper-locations: classpath:mybatis/mapper/*.xml
-
+# mapper日志
 logging:
   level:
     top:
       webra:
         mapper: debug
-
+# 图片存储位置
 file-path:
   win: E:\images\imageService\
   lin: /usr/image/
