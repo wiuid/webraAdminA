@@ -151,7 +151,7 @@ public class InfoServiceImpl implements InfoService {
                 String imgName;
                 // 这样默认头像将存在，自定义头像被覆盖（不太可能同一个时间点两个人新人账号同时更换头像- -造成相互覆盖吧，那样一旦有一个人再更新头像，另一个人头像直接也就改了）
                 String avatar = user.getAvatar();
-                if (avatar.equals("/assets/images/touxiang.gif")){
+                if (avatar.equals("/touxiang.gif")){
                     imgName = System.currentTimeMillis()+".jpg";
                 }else {
                     imgName = avatar.replaceFirst("/api/image/","");
