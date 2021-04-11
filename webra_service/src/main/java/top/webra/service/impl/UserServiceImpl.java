@@ -160,8 +160,17 @@ public class UserServiceImpl implements UserService {
     }
     // 删除用户
     public ResponseBean deleteUser(String token, Integer id) {
+        Claims claims = JwtUtil.getClaims(token);
+        Integer userId = CastUtil.toInteger(claims.get("jti"));
+        String username = claims.get("sub").toString();
+
+        // 删除的用户不可是自身和超管
+        if (id.equals(userId) || id == 1){
+            responseBean.buildError("违规操作");
+            logService.createLog("删除用户", username,"违规操作");
+            return responseBean;
+        }
         int delete = userMapper.deleteById(id);
-        String username = JwtUtil.getUsername(token);
         if (delete == 1){
             informMapper.update(null, new UpdateWrapper<Inform>().eq("user_id", id).set("user_id", 1));
             logService.createLog("删除用户", username,"删除成功");
@@ -180,7 +189,18 @@ public class UserServiceImpl implements UserService {
         for (String s : split) {
             integers.add(Integer.valueOf(s));
         }
-        String username = JwtUtil.getUsername(token);
+
+        Claims claims = JwtUtil.getClaims(token);
+        Integer userId = CastUtil.toInteger(claims.get("jti"));
+        String username = claims.get("sub").toString();
+
+        // 批量删除的用户中不可包含自身和超管
+        if (integers.contains(userId) || integers.contains(1)){
+            responseBean.buildError("违规操作");
+            logService.createLog("批量删除用户", username,"违规操作");
+            return responseBean;
+        }
+
         int deletes = userMapper.deleteBatchIds(integers);
         if (deletes == 0){
             logService.createLog("删除用户", username,"批量删除失败,数据库可能存在异常");
@@ -196,7 +216,9 @@ public class UserServiceImpl implements UserService {
     // 新建/修改用户
     public ResponseBean saveUser(String token, User user) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String username = JwtUtil.getUsername(token);
+        Claims claims = JwtUtil.getClaims(token);
+        String username = claims.get("sub").toString();
+
         user.setUpdateDate(timestamp);
         if (user.getId().equals(0)){
             user.setPassword("c4b671607e99c43686160e3f31a44e033a1211a818f17534");
@@ -205,16 +227,31 @@ public class UserServiceImpl implements UserService {
             user.setAvatar("/touxiang.gif");
             insertUser(username, user);
         }else {
+            Integer userId = CastUtil.toInteger(claims.get("jti"));
+            if (user.getId().equals(userId) || user.getId() == 1){
+                responseBean.buildError("违规操作");
+                logService.createLog("修改用户信息", username,"违规操作");
+                return responseBean;
+            }
             updateUser(username, user);
         }
         return responseBean;
     }
     // 修改用户状态
     public ResponseBean updateUserState(String token, Integer id) {
+        Claims claims = JwtUtil.getClaims(token);
+        Integer userId = CastUtil.toInteger(claims.get("jti"));
+        String username = claims.get("sub").toString();
+
+        if (id.equals(userId) || id == 1){
+            responseBean.buildError("违规操作");
+            logService.createLog("修改用户状态", username,"违规操作");
+            return responseBean;
+        }
+
         User user = userMapper.selectById(id);
         Integer state = user.getState()==1?0:1;
         int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("state", state).last("limit 1"));
-        String username = JwtUtil.getUsername(token);
         if (update ==1){
             logService.createLog("修改用户状态", username,"修改用户状态:"+ user.getUsername() + ",修改成功");
             responseBean.buildOkMsg("修改状态成功");
@@ -225,13 +262,18 @@ public class UserServiceImpl implements UserService {
         return responseBean;
     }
 
-    // 修改用户密码（非自己的），这里还需要进一步验证权限啊
+    // 修改用户密码（非自己的）
     public ResponseBean updatePassword(String token, Integer id, String rootPassword, String newPassword) {
-        JwtUtil jwtUtil = new JwtUtil();
-        Claims claims = jwtUtil.parseJWT(token);
-        Object userId = claims.get("jti");
-        User user = userMapper.selectById(CastUtil.toInteger(userId));
-        String username = JwtUtil.getUsername(token);
+        Claims claims = JwtUtil.getClaims(token);
+
+        Integer userId = CastUtil.toInteger(claims.get("jti"));
+        String username = claims.get("sub").toString();
+        if (id.equals(userId) || id == 1){
+            responseBean.buildError("违规操作");
+            logService.createLog("修改用户密码", username,"违规操作");
+            return responseBean;
+        }
+        User user = userMapper.selectById(userId);
         if (MD5Util.getSaltverifyMD5(rootPassword, user.getPassword())) {
             int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("password", MD5Util.getSaltMD5(newPassword)));
             if (update ==1){
