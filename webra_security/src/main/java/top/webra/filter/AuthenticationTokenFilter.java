@@ -68,8 +68,9 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 // token过期 直接返回403
                 response.setHeader("Content-Type", "application/json");
                 response.setStatus(200);
+                response.setCharacterEncoding("utf-8");
                 PrintWriter writer = response.getWriter();
-                responseBean.buildNotLogin("login timeOut");
+                responseBean.buildNotLogin("登录超时");
                 writer.write(JSON.toJSONString(responseBean));
                 writer.flush();
                 log.info("token 过期");
@@ -81,6 +82,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
             if ( uri.contains("/system/") ){
                 response.setHeader("Content-Type", "application/json");
                 response.setStatus(200);
+                response.setCharacterEncoding("utf-8");
                 PrintWriter writer = response.getWriter();
                 responseBean.buildNotLogin("当前未登录，跳转至登录页");
                 writer.write(JSON.toJSONString(responseBean));
