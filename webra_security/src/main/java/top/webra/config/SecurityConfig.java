@@ -40,15 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth){
-        System.out.println("--------------->>>>>>>>>>>>  SpringSecurityConf.configure(AuthenticationManagerBuilder auth)     ");
         auth.authenticationProvider(selfAuthenticationProvider);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("--------------->>>>>>>>>>>>  SpringSecurityConf.configure(HttpSecurity http)     ");
-
-
         // 关闭csrf
         http
                 .csrf().disable()

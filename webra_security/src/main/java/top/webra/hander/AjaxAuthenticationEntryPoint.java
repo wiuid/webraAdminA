@@ -24,10 +24,7 @@ public class AjaxAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e)
             throws IOException {
-        responseBean.setStatus(0);
-        responseBean.setMsg("no login or login error");
-        responseBean.setData(null);
         httpServletResponse.setContentType("application/json;charset=utf-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(responseBean));
+        httpServletResponse.getWriter().write(responseBean.buildError("未登录"));
     }
 }

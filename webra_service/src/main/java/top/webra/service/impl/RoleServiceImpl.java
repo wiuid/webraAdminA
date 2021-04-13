@@ -9,7 +9,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.RoleMapper;
 import top.webra.mapper.UserMapper;
@@ -21,8 +20,6 @@ import top.webra.util.JwtUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -60,7 +57,7 @@ public class RoleServiceImpl implements RoleService{
      * @param createDateEnd     创建结束时间
      * @param page              页码
      */
-    public ResponseBean getRoleList(String title, String code, Integer state, String createDateStart, String createDateEnd, Integer page) {
+    public String getRoleList(String title, String code, Integer state, String createDateStart, String createDateEnd, Integer page) {
         // 判断搜索条件是否存在，存在的话 需要进行格式化 才可以存放数据库
         if (!"".equals(createDateStart) && createDateStart != null){
             createDateStart = CastUtil.toDateFormat(createDateStart);
@@ -78,56 +75,53 @@ public class RoleServiceImpl implements RoleService{
         data.put("roleList", roleList);
         data.put("total",roleOrderAscInfo.getTotal());
         data.put("page",roleOrderAscInfo.getPages());
-        responseBean.buildOk(data);
-        return responseBean;
+        return responseBean.buildOk(data);
     }
 
     /**
      * 根据id 获取角色信息
      * @param id    角色id
      */
-    public ResponseBean getRole(Integer id) {
+    public String getRole(Integer id) {
         Role role = roleMapper.selectById(id);
 
         if (role == null){
-            responseBean.buildNoData();
+            return responseBean.buildNoData();
         }else {
             HashMap<String, Object> data = new HashMap<>();
             data.put("role", role);
-            responseBean.buildOk(data);
+            return responseBean.buildOk(data);
         }
-        return responseBean;
     }
 
     /**
      * 角色新建/修改处理
      * @param role  角色对象
      */
-    public ResponseBean saveRole(String token, Role role) {
+    public String saveRole(String token, Role role) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         role.setUpdateDate(timestamp);
         String username = JwtUtil.getUsername(token);
         if (role.getId().equals(0)){
             role.setCreateDate(timestamp);
-            insertRole(username, role);
+            return insertRole(username, role);
         }else {
-            updateRole(username, role);
+            return updateRole(username, role);
         }
-        return responseBean;
     }
 
     /**
      * 新建角色
      * @param role 角色对象
      */
-    private void insertRole(String username, Role role){
+    private String insertRole(String username, Role role){
         int insert = roleMapper.insert(role);
         if (insert == 1){
             logService.createLog("新建角色", username,"新建角色:"+ role.getTitle() + ",新建成功");
-            responseBean.buildOkMsg("新增角色成功");
+            return responseBean.buildOkMsg("新增角色成功");
         }else {
             logService.createLog("新建角色", username,"新建角色:"+ role.getTitle() + ",新建失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("数据异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }
     }
 
@@ -135,14 +129,14 @@ public class RoleServiceImpl implements RoleService{
      * 修改角色
      * @param role 角色对象
      */
-    private void updateRole(String username, Role role){
+    private String updateRole(String username, Role role){
         int update = roleMapper.updateById(role);
         if (update == 1){
             logService.createLog("修改角色", username,"修改角色:"+ role.getTitle() + ",修改成功");
-            responseBean.buildOkMsg("修改角色成功");
+            return responseBean.buildOkMsg("修改角色成功");
         }else {
             logService.createLog("修改角色", username,"修改角色:"+ role.getTitle() + ",修改失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("数据异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }
     }
 
@@ -150,26 +144,25 @@ public class RoleServiceImpl implements RoleService{
      * 根据id 修改状态
      * @param id    角色id
      */
-    public ResponseBean updateRoleSwitch(String token, Integer id){
+    public String updateRoleSwitch(String token, Integer id){
         Role role = roleMapper.selectById(id);
         Integer state = role.getState()==1?0:1;
         int update = roleMapper.update(null, new UpdateWrapper<Role>().eq("id", id).set("state", state).last("limit 1"));
         String username = JwtUtil.getUsername(token);
         if (update ==1){
             logService.createLog("修改角色状态", username,"修改角色状态:"+ role.getTitle() + ",修改成功");
-            responseBean.buildOkMsg("修改状态成功");
+            return responseBean.buildOkMsg("修改状态成功");
         }else {
             logService.createLog("修改角色状态", username,"修改角色状态:"+ role.getTitle() + ",修改失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("数据异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }
-        return responseBean;
     }
 
     /**
      * 删除单个角色
      * @param id    角色id
      */
-    public ResponseBean deleteRole(String token, Integer id) {
+    public String deleteRole(String token, Integer id) {
         List<User> users = userMapper.selectList(new QueryWrapper<User>().select("id").eq("role_id", id));
         // 将拥有该角色的用户修改角色为默认值2 普通用户
         setUserRoleDefault(users);
@@ -178,19 +171,18 @@ public class RoleServiceImpl implements RoleService{
         if (delete == 1){
             userMapper.update(null, new UpdateWrapper<User>().eq("role_id", id).set("role_id", 2));
             logService.createLog("删除角色", username,"删除成功");
-            responseBean.buildOkMsg("删除角色成功");
+            return responseBean.buildOkMsg("删除角色成功");
         }else {
             logService.createLog("删除角色", username,"删除失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("数据异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }
-        return responseBean;
     }
 
     /**
      * 批量删除角色
      * @param ids    角色ids列表字符串
      */
-    public ResponseBean deleteRoles(String token, String ids) {
+    public String deleteRoles(String token, String ids) {
         String[] split = ids.split(",");
         ArrayList<Integer> integers = new ArrayList<>();
         for (String s : split) {
@@ -203,13 +195,12 @@ public class RoleServiceImpl implements RoleService{
         String username = JwtUtil.getUsername(token);
         if (deletes == 0){
             logService.createLog("删除角色", username,"批量删除失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("数据异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }else {
             userMapper.update(null, new UpdateWrapper<User>().in("role_id", integers).set("role_id", 2));
             logService.createLog("删除角色", username,"批量删除成功");
-            responseBean.buildOkMsg("批量删除角色成功");
+            return responseBean.buildOkMsg("批量删除角色成功");
         }
-        return responseBean;
     }
 
     /**
@@ -228,14 +219,11 @@ public class RoleServiceImpl implements RoleService{
     /**
      * 角色列表，用以 选择
      */
-    public ResponseBean getRoleTree() {
+    public String getRoleTree() {
         List<Role> roles = roleMapper.selectList(new QueryWrapper<Role>().select("id", "title"));
-        responseBean.setStatus(200);
-        responseBean.setMsg("success");
         HashMap<String, Object> data = new HashMap<>();
         data.put("roleList", roles);
-        responseBean.setData(data);
-        return responseBean;
+        return responseBean.buildOk(data);
     }
 
     @Override

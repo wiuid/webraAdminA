@@ -25,7 +25,7 @@ public class InfoController {
      * 返回个人信息
      */
     @GetMapping
-    public ResponseBean getTableDate(@RequestHeader("token") String token){
+    public String getTableDate(@RequestHeader("token") String token){
         return infoService.getInfo(token);
     }
 
@@ -33,7 +33,7 @@ public class InfoController {
      * 修改个人信息
      */
     @PostMapping("/save")
-    public ResponseBean editInfo(@RequestHeader("token") String token, Integer id, String nickname, String phone, String email){
+    public String editInfo(@RequestHeader("token") String token, Integer id, String nickname, String phone, String email){
         return infoService.setInfo(token,id,nickname,phone,email);
     }
 
@@ -41,18 +41,18 @@ public class InfoController {
      * 修改密码
      */
     @PostMapping("/password")
-    public ResponseBean editPassword(@RequestHeader("token") String token, Integer id, String oldPassword, String newPassword){
+    public String editPassword(@RequestHeader("token") String token, Integer id, String oldPassword, String newPassword){
         return infoService.setPassword(token,id,oldPassword,newPassword);
     }
 
     // 修改头像
     @PostMapping("/avatar")
-    public ResponseBean uploadAvatar(@RequestHeader("token") String token, Integer id, String base64){
+    public String uploadAvatar(@RequestHeader("token") String token, Integer id, String base64){
         return infoService.updateAvatar(token, id, base64);
     }
     // 获取头像
     @GetMapping("/avatar")
-    public ResponseBean getAvatar(@RequestHeader("token") String token){
+    public String getAvatar(@RequestHeader("token") String token){
         return infoService.getAvatar(token);
     }
 

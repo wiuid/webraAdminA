@@ -66,26 +66,24 @@ public class UserLoginServiceImpl implements UserDetailsService {
 
         // 权限信息为空，不可能存在的情况，应至少有一个默认权限
         if(role == null){
-            return new UserLogin(user.getId(),username,user.getPassword(),authorities);
+            return new UserLogin(user.getId(),username,user.getPassword(), user.getState(),authorities);
         }
         // 将权限字符串 转换为 字符串列表
         String authIds = role.getAuthIds();
         List<String> authIdsList= Arrays.asList(authIds .split(",")).stream().map(s -> (s.trim())).collect(Collectors.toList());
         // 根据角色的权限列表 查询权限
         ArrayList<Integer> ids = new ArrayList<>();
-        QueryWrapper<Auth> authListWrapper = new QueryWrapper<>();
         // 将 字符串类型的权限列表 转换为 Integer类型
         for (String s : authIdsList) {
             Integer integer = Integer.valueOf(s);
             ids.add(integer);
         }
         // 将ids权限列表 传入条件构造器，查询所有对应的权限
-        authListWrapper.in("id",ids);
-        List<Auth> auths = authMapper.selectList(authListWrapper);
+        List<Auth> auths = authMapper.selectList(new QueryWrapper<Auth>().in("id", ids));
         // 将对应的权限字符加上前缀ROLE_ 传入authorities，将该值传给UserDetails
         for (Auth auth : auths) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + auth.getName()));
         }
-        return new UserLogin(user.getId(),username,user.getPassword(),authorities);
+        return new UserLogin(user.getId(),username,user.getPassword(), user.getState(),authorities);
     }
 }

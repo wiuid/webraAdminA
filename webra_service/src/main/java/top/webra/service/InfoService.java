@@ -14,13 +14,13 @@ public interface InfoService {
      * 根据token获取个人头像地址
      * @param token     解析
      */
-    ResponseBean getAvatar(String token);
+    String getAvatar(String token);
 
     /**
      * 从token中获取用户id，根据用户id返回个人信息
      * @param token 解析
      */
-    ResponseBean getInfo(String token);
+    String getInfo(String token);
 
     /**
      * 根据id 修改用户个人信息，token用于验证是否是个人
@@ -30,7 +30,7 @@ public interface InfoService {
      * @param phone         手机
      * @param email         邮箱
      */
-    ResponseBean setInfo(String token,
+    String setInfo(String token,
                          Integer id,
                          String nickname,
                          String phone,
@@ -44,7 +44,7 @@ public interface InfoService {
      * @param oldPassword   旧密码
      * @param newPassword   新密码
      */
-    ResponseBean setPassword(String token,
+    String setPassword(String token,
                              Integer id,
                              String oldPassword,
                              String newPassword);
@@ -55,5 +55,5 @@ public interface InfoService {
      * @param id    用户id
      * @param base64    图像信息
      */
-    ResponseBean updateAvatar(String token, Integer id, String base64);
+    String updateAvatar(String token, Integer id, String base64);
 }

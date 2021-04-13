@@ -22,7 +22,7 @@ public interface UserService {
      * @param createDateEnd     创建结束范围
      * @param page              页码
      */
-    ResponseBean getUserList(String token,
+    String getUserList(String token,
                              Integer departmentId,
                              String username,
                              Integer phone,
@@ -35,24 +35,24 @@ public interface UserService {
      * 根据id获取用户信息
      * @param userId 用户id
      */
-    ResponseBean selectUser(Integer userId);
+    String selectUser(Integer userId);
 
     /**
      * 模糊查询nickname
      */
-    ResponseBean selectUserByNickname();
+    String selectUserByNickname();
 
     /**
      * 新增一个用户
      * @param user 用户对象
      */
-    ResponseBean saveUser(String token, User user);
+    String saveUser(String token, User user);
 
     /**
      * 根据id 修改用户状态
      * @param id 用户id
      */
-    ResponseBean updateUserState(String token, Integer id);
+    String updateUserState(String token, Integer id);
 
     /**
      * 更新用户密码
@@ -60,18 +60,18 @@ public interface UserService {
      * @param rootPassword  root密码
      * @param newPassword   用户新密码
      */
-    ResponseBean updatePassword(String token, Integer id, String  rootPassword, String newPassword);
+    String updatePassword(String token, Integer id, String  rootPassword, String newPassword);
 
 
     /**
      * 删除一个用户
      * @param id 用户id
      */
-    ResponseBean deleteUser(String token, Integer id);
+    String deleteUser(String token, Integer id);
 
     /**
      * 批量删除用户
      * @param ids 用户ids
      */
-    ResponseBean deleteUsers(String token, String ids);
+    String deleteUsers(String token, String ids);
 }

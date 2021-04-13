@@ -20,7 +20,7 @@ public interface LogService {
      * @param createDateEnd     创建结束时间
      * @param page              页码
      */
-    ResponseBean getLogList(String title,
+    String getLogList(String title,
                             String createDateStart,
                             String createDateEnd,
                             Integer page);
@@ -30,13 +30,13 @@ public interface LogService {
      * 删除单条日志
      * @param id    日志id
      */
-    ResponseBean deleteLog(Integer id);
+    String deleteLog(Integer id);
 
     /**
      * 批量删除日志信息
      * @param ids   字符串类型的id列表
      */
-    ResponseBean deleteLogs(String token, String ids);
+    String deleteLogs(String token, String ids);
 
     /**
      * 导出日志
@@ -46,6 +46,6 @@ public interface LogService {
     /**
      * 删除所有日志数据
      */
-    ResponseBean emptyLog(String token);
+    String emptyLog(String token);
 
 }

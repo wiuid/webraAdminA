@@ -1,6 +1,5 @@
 package top.webra.adminA;
 
-import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.DepartmentMapper;
-import top.webra.pojo.Auth;
 import top.webra.service.impl.AuthServiceImpl;
 import top.webra.service.impl.DepartmentServiceImpl;
 import top.webra.service.impl.InformServiceImpl;
 import top.webra.service.impl.UserServiceImpl;
-
-import java.util.List;
 
 
 /**
@@ -38,8 +34,7 @@ public class ServiceTest {
     }
     @Test
     public void userTest(){
-        ResponseBean user = userService.selectUser(1);
-        System.out.println(user);
+        System.out.println(userService.selectUser(1));
     }
 
     @Autowired
@@ -59,8 +54,6 @@ public class ServiceTest {
     private AuthServiceImpl authService;
     @Test
     public void authTest(){
-        ResponseBean tree = authService.getTree();
-        String s = JSON.toJSONString(tree.getData().get("authTree"));
-        System.out.println(s);
+        String s = authService.getTree();
     }
 }

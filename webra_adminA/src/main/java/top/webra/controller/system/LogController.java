@@ -32,7 +32,7 @@ public class LogController {
      * @return 日志列表
      */
     @GetMapping
-    public ResponseBean getTableDate(String title, String createDateStart, String createDateEnd, Integer page){
+    public String getTableDate(String title, String createDateStart, String createDateEnd, Integer page){
         return logService.getLogList(title,createDateStart,createDateEnd,page);
     }
 
@@ -41,7 +41,7 @@ public class LogController {
      * @param id 日志id
      */
     @DeleteMapping("/delete")
-    public ResponseBean deleteLog(int id){
+    public String deleteLog(int id){
         return logService.deleteLog(id);
     }
 
@@ -50,14 +50,14 @@ public class LogController {
      * @param ids 日志ids列表字符串
      */
     @DeleteMapping("/deletes")
-    public ResponseBean deleteLogs(@RequestHeader("token")String token, String ids){
+    public String deleteLogs(@RequestHeader("token")String token, String ids){
         return logService.deleteLogs(token, ids);
     }
     /**
      * 清空日志
      */
     @DeleteMapping("/empty")
-    public ResponseBean emptyLog(@RequestHeader("token")String token){
+    public String emptyLog(@RequestHeader("token")String token){
         return logService.emptyLog(token);
     }
     /**

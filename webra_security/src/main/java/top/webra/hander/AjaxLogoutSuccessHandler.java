@@ -24,11 +24,7 @@ public class AjaxLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication)
             throws IOException {
-
-        responseBean.setStatus(200);
-        responseBean.setMsg("LoginOut success");
-        responseBean.setData(null);
         httpServletResponse.setContentType("application/json;charset=utf-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(responseBean));
+        httpServletResponse.getWriter().write(responseBean.buildOkMsg("退出成功"));
     }
 }

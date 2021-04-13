@@ -24,11 +24,7 @@ public class AjaxAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e)
             throws IOException {
-        responseBean.setStatus(300);
-
-        responseBean.setMsg("Access Error");
-        responseBean.setData(null);
         httpServletResponse.setContentType("application/json;charset=utf-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(responseBean));
+        httpServletResponse.getWriter().write(responseBean.buildError("权限不足"));
     }
 }

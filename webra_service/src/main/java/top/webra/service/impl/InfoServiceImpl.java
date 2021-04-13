@@ -48,21 +48,21 @@ public class InfoServiceImpl implements InfoService {
     @Autowired
     private RoleMapper roleMapper;
 
-    public ResponseBean getAvatar(String token) {
+    // 获取头像
+    public String getAvatar(String token) {
         JwtUtil jwtUtil = new JwtUtil();
         Claims claims = jwtUtil.parseJWT(token);
         User user = userMapper.selectOne(new QueryWrapper<User>().select("avatar").eq("id", CastUtil.toInteger(claims.get("jti"))));
         HashMap<String, Object> data = new HashMap<>();
         data.put("avatar", user.getAvatar());
-        responseBean.buildOk(data);
-        return responseBean;
+        return responseBean.buildOk(data);
     }
 
     /**
      * 获取个人信息页 的 数据
      * @param token 利用token 解析用户信息
      */
-    public ResponseBean getInfo(String token) {
+    public String getInfo(String token) {
         // 存储数据
         HashMap<String, Object> data = new HashMap<>();
         // 解析token
@@ -80,8 +80,7 @@ public class InfoServiceImpl implements InfoService {
         // 获取角色名
         Role role = roleMapper.selectOne(new QueryWrapper<Role>().select("title").eq("id", user.getRoleId()));
         data.put("roleTitle", role.getTitle());
-        responseBean.buildOk(data);
-        return responseBean;
+        return responseBean.buildOk(data);
     }
 
     /**
@@ -92,18 +91,17 @@ public class InfoServiceImpl implements InfoService {
      * @param phone     手机号
      * @param email     邮箱
      */
-    public ResponseBean setInfo(String token, Integer id, String nickname, String phone, String email) {
+    public String setInfo(String token, Integer id, String nickname, String phone, String email) {
         if (judge(token, id)){
             int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("nickname", nickname).set("phone", phone).set("email", email).last("limit 1"));
             if (update == 1){
-                responseBean.buildOkMsg("修改信息成功");
+                return responseBean.buildOkMsg("修改信息成功");
             }else {
-                responseBean.buildNoDataMsg("数据异常");
+                return responseBean.buildNoDataMsg("数据异常");
             }
         }else {
-            responseBean.buildUserErr();
+            return responseBean.buildUserErr();
         }
-        return responseBean;
     }
 
     /**
@@ -113,7 +111,7 @@ public class InfoServiceImpl implements InfoService {
      * @param oldPassword       旧密码
      * @param newPassword       新密码
      */
-    public ResponseBean setPassword(String token, Integer id, String oldPassword, String newPassword) {
+    public String setPassword(String token, Integer id, String oldPassword, String newPassword) {
         if (judge(token, id)){
             User user = userMapper.selectOne(new QueryWrapper<User>().select("password").eq("id", id));
             // 原密码对比
@@ -122,21 +120,20 @@ public class InfoServiceImpl implements InfoService {
                 newPassword = MD5Util.getSaltMD5(newPassword);
                 int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("password", newPassword).last("limit 1"));
                 if (update == 1){
-                    responseBean.buildOkMsg("修改密码成功");
+                    return responseBean.buildOkMsg("修改密码成功");
                 }else {
-                    responseBean.buildNoDataMsg("数据异常");
+                    return responseBean.buildNoDataMsg("数据异常");
                 }
             }else {
-                responseBean.buildNoDataMsg("原密码错误");
+                return responseBean.buildNoDataMsg("原密码错误");
             }
         }else {
-            responseBean.buildUserErr();
+            return responseBean.buildUserErr();
         }
-        return responseBean;
     }
 
     // 上传头像
-    public ResponseBean updateAvatar(String token, Integer id, String base64) {
+    public String updateAvatar(String token, Integer id, String base64) {
         if (judge(token, id)){
             try {
                 Base64.Decoder decoder = Base64.getDecoder();
@@ -172,17 +169,16 @@ public class InfoServiceImpl implements InfoService {
                 fos.close();
                 int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("avatar", imgUrl));
                 if (update == 1){
-                    responseBean.buildOkMsg("修改头像成功，刷新即可");
+                    return responseBean.buildOkMsg("修改头像成功，刷新即可");
                 }else {
-                    responseBean.buildNoDataMsg("数据异常");
+                    return responseBean.buildNoDataMsg("数据异常");
                 }
             } catch (IOException e) {
-                responseBean.buildNoDataMsg("图片处理异常，请重新提交");
+                return responseBean.buildNoDataMsg("图片处理异常，请重新提交");
             }
         }else {
-            responseBean.buildUserErr();
+            return responseBean.buildUserErr();
         }
-        return responseBean;
     }
 
     private Boolean judge(String token, Integer id){

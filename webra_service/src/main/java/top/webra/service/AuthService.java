@@ -22,5 +22,5 @@ public interface AuthService {
     /**
      * 获得tree列表
      */
-    ResponseBean getTree();
+    String getTree();
 }

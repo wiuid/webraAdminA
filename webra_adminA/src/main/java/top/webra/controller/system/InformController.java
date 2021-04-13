@@ -34,7 +34,7 @@ public class InformController {
      * @return 公告列表
      */
     @GetMapping
-    public ResponseBean getTableDate(String title, Integer state, Integer page, @Nullable Integer pageSize, String createDateStart, String createDateEnd){
+    public String getTableDate(String title, Integer state, Integer page, @Nullable Integer pageSize, String createDateStart, String createDateEnd){
         return informService.selectInformList(title,state,page,pageSize,createDateStart,createDateEnd);
     }
 
@@ -43,16 +43,8 @@ public class InformController {
      * @param id 公告id
      */
     @GetMapping("/get")
-    public ResponseBean getInform(Integer id){
-        log.info("接收的公告id为：" + id);
-        if (id == null){
-            responseBean.setStatus(204);
-            responseBean.setData(null);
-            responseBean.setMsg("提供参数为空");
-        }else {
-            responseBean = informService.selectInform(id);
-        }
-        return responseBean;
+    public String getInform(Integer id){
+        return informService.selectInform(id);
     }
 
     /**
@@ -61,7 +53,7 @@ public class InformController {
      */
     @PreAuthorize("hasRole('ROLE_inform')")
     @PostMapping("/save")
-    public ResponseBean saveInform(Inform inform, @RequestHeader("token") String token){
+    public String saveInform(Inform inform, @RequestHeader("token") String token){
         return informService.saveInform(inform,token);
     }
 
@@ -71,7 +63,7 @@ public class InformController {
      */
     @PreAuthorize("hasRole('ROLE_inform')")
     @DeleteMapping("/delete")
-    public ResponseBean deleteInform(@RequestHeader("token") String token, int id){
+    public String deleteInform(@RequestHeader("token") String token, int id){
         return informService.deleteInform(token, id);
     }
 
@@ -81,7 +73,7 @@ public class InformController {
      */
     @PreAuthorize("hasRole('ROLE_inform')")
     @DeleteMapping("/deletes")
-    public ResponseBean deleteInforms(@RequestHeader("token") String token,String ids){
+    public String deleteInforms(@RequestHeader("token") String token,String ids){
         return informService.deleteInforms(token, ids);
     }
 }

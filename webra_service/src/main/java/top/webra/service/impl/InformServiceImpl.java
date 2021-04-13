@@ -46,7 +46,7 @@ public class InformServiceImpl implements InformService {
      * @param createDateStart   初始创建日期
      * @param createDateEnd     最后创建日期
      */
-    public ResponseBean selectInformList(String title, Integer state, Integer page, @Nullable Integer pageSize, String createDateStart, String createDateEnd){
+    public String selectInformList(String title, Integer state, Integer page, @Nullable Integer pageSize, String createDateStart, String createDateEnd){
         // 将时间从String转为Timestamp 如果String转换出错，就返回Null
 
         if (!"".equals(createDateStart) && createDateStart != null){
@@ -65,26 +65,23 @@ public class InformServiceImpl implements InformService {
         data.put("informList", informsOrderAsc);
         data.put("total",informsOrderAscInfo.getTotal());
         data.put("page",informsOrderAscInfo.getPages());
-        responseBean.buildOk(data);
-
-        return responseBean;
+        return responseBean.buildOk(data);
     }
 
     /**
      * 根据id获取内容
      * @param informId 公告id
      */
-    public ResponseBean selectInform(Integer informId) {
+    public String selectInform(Integer informId) {
         Inform inform = informMapper.getInform(informId);
 
         if (inform == null){
-            responseBean.buildNoData();
+            return responseBean.buildNoData();
         }else {
             HashMap<String, Object> data = new HashMap<>();
             data.put("inform", inform);
-            responseBean.buildOk(data);
+            return responseBean.buildOk(data);
         }
-        return responseBean;
     }
 
     /**
@@ -92,7 +89,7 @@ public class InformServiceImpl implements InformService {
      * @param inform    公告id
      * @param token     token
      */
-    public ResponseBean saveInform(Inform inform, String token) {
+    public String saveInform(Inform inform, String token) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         // 首先根据公告id决定是修改还是添加数据，null代表新建/其他代表修改
         inform.setUpdateDate(timestamp);
@@ -110,10 +107,10 @@ public class InformServiceImpl implements InformService {
             // 返回信息
             if (insert == 1){
                 logService.createLog("新建公告", username,"新建公告:"+ inform.getTitle() + ",新建成功");
-                responseBean.buildOkMsg("新增公告成功");
+                return responseBean.buildOkMsg("新增公告成功");
             }else {
                 logService.createLog("新建公告", username,"新建公告:"+ inform.getTitle() + ",新建失败,数据库可能存在异常");
-                responseBean.buildNoDataMsg("数据异常");
+                return responseBean.buildNoDataMsg("数据异常");
             }
         } else {
             // 修改某公告
@@ -122,37 +119,35 @@ public class InformServiceImpl implements InformService {
             // 返回信息
             if (update == 1){
                 logService.createLog("修改公告", username, "修改公告:"+ inform.getTitle() + ",修改成功");
-                responseBean.buildOkMsg("修改公告成功");
+                return responseBean.buildOkMsg("修改公告成功");
             }else {
                 logService.createLog("修改公告", username,"修改公告:"+ inform.getTitle() + ",修改失败,数据库可能存在异常");
-                responseBean.buildNoDataMsg("数据异常");
+                return responseBean.buildNoDataMsg("数据异常");
             }
         }
-        return responseBean;
     }
 
     /**
      * 删除单个公告
      * @param id 公告id
      */
-    public ResponseBean deleteInform(String token, Integer id) {
+    public String deleteInform(String token, Integer id) {
         int delete = informMapper.deleteById(id);
         String username = JwtUtil.getUsername(token);
         if (delete == 1){
             logService.createLog("删除公告", username,"删除成功");
-            responseBean.buildOkMsg("删除公告成功");
+            return responseBean.buildOkMsg("删除公告成功");
         }else {
             logService.createLog("删除公告", username,"删除失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("数据异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }
-        return responseBean;
     }
 
     /**
      * 批量删除公告
      * @param ids 公告ids列表字符串
      */
-    public ResponseBean deleteInforms(String token, String ids) {
+    public String deleteInforms(String token, String ids) {
         // 将字符串的id列表转换为Integer List
         String[] split = ids.split(",");
         ArrayList<Integer> integers = new ArrayList<>();
@@ -165,12 +160,11 @@ public class InformServiceImpl implements InformService {
         int i = informMapper.deleteBatchIds(integers);
         if (i != 0){
             logService.createLog("删除公告", username,"批量删除成功");
-            responseBean.buildOkMsg("批量删除公告成功");
+            return responseBean.buildOkMsg("批量删除公告成功");
         }else{
             logService.createLog("删除公告", username,"批量删除失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("数据异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }
-        return responseBean;
     }
 
 

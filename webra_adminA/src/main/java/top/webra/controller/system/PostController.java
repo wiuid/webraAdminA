@@ -30,7 +30,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @GetMapping
-    public ResponseBean getTableDate(String title, Integer state, Integer page){
+    public String getTableDate(String title, Integer state, Integer page){
         return postService.getPost(title,  state, page);
     }
 
@@ -40,7 +40,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @GetMapping("/get")
-    public ResponseBean getPostById(Integer id){
+    public String getPostById(Integer id){
         return postService.getPostById(id);
     }
 
@@ -49,7 +49,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping("/tree")
-    public ResponseBean getPostTree(){
+    public String getPostTree(){
         return postService.getPostTree();
     }
 
@@ -59,7 +59,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @PostMapping("/save")
-    public ResponseBean savePost(@RequestHeader("token") String token, Post post){
+    public String savePost(@RequestHeader("token") String token, Post post){
         return postService.savePost(token, post);
     }
 
@@ -69,7 +69,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @PostMapping("/state")
-    public ResponseBean updatePostState(@RequestHeader("token") String token, Integer id){
+    public String updatePostState(@RequestHeader("token") String token, Integer id){
         return postService.updatePostState(token, id);
     }
 
@@ -79,7 +79,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @DeleteMapping("/delete")
-    public ResponseBean deletePost(@RequestHeader("token") String token, int id){
+    public String deletePost(@RequestHeader("token") String token, int id){
         return postService.deletePost(token, id);
     }
 
@@ -89,7 +89,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @DeleteMapping("/deletes")
-    public ResponseBean deletePosts(@RequestHeader("token") String token, String ids){
+    public String deletePosts(@RequestHeader("token") String token, String ids){
         return postService.deletePosts(token, ids);
     }
 

@@ -23,7 +23,7 @@ public interface RoleService {
      * @param createDateEnd     创建结束时间
      * @param page              页码
      */
-    ResponseBean getRoleList(String title,
+    String getRoleList(String title,
                              String code,
                              Integer state,
                              String createDateStart,
@@ -34,36 +34,36 @@ public interface RoleService {
      * 根据id 获取角色信息
      * @param id    角色id
      */
-    ResponseBean getRole(Integer id);
+    String getRole(Integer id);
 
     /**
      * 角色新建/修改处理
      * @param role  角色对象
      */
-    ResponseBean saveRole(String token, Role role);
+    String saveRole(String token, Role role);
 
     /**
      * 根据id 修改状态
      * @param id    角色id
      */
-    ResponseBean updateRoleSwitch(String token, Integer id);
+    String updateRoleSwitch(String token, Integer id);
     /**
      * 删除单个角色
      * @param id    角色id
      */
-    ResponseBean deleteRole(String token, Integer id);
+    String deleteRole(String token, Integer id);
 
     /**
      * 批量删除角色
      * @param ids    角色ids列表字符串
      */
-    ResponseBean deleteRoles(String token, String ids);
+    String deleteRoles(String token, String ids);
 
 
     /**
      * 角色列表，用以 选择
      */
-    ResponseBean getRoleTree();
+    String getRoleTree();
 
     void exportRoles(HttpServletResponse response);
 }

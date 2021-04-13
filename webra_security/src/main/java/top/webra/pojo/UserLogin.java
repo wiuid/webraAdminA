@@ -23,6 +23,7 @@ public class UserLogin implements UserDetails {
     private Integer id;
     private String username;
     private String password;
+    private Integer state;
     private Collection<? extends GrantedAuthority> authorities;
 
 
@@ -38,20 +39,25 @@ public class UserLogin implements UserDetails {
     public String getUsername() {
         return this.username;
     }
+    // 账户是否过期
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
+    // 账户是否锁定
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
+    // 账户凭证是否过期
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
+    // 是否启用
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.state.equals(0);
     }
 }

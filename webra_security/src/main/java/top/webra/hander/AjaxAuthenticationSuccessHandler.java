@@ -62,12 +62,9 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         Map<String, Object> data = authService.getUserAside(token);
         // token
         data.put("token",token);
-        responseBean.buildOk(data);
-        System.out.println("--------------->>>>>>>>>>>>  Ajax Authentication Success Handler   ");
 
-        System.out.println(JSON.toJSONString(responseBean));
         httpServletResponse.setContentType("application/json;charset=utf-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(responseBean));
+        httpServletResponse.getWriter().write(responseBean.buildOk(data));
     }
 
 

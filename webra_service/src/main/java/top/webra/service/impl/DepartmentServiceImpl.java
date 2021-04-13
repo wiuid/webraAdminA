@@ -38,7 +38,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 获取全部部门信息
      */
-    public ResponseBean getDepartmentList(String token) {
+    public String getDepartmentList(String token) {
         Claims claims = JwtUtil.getClaims(token);
         String authIds = claims.get("roles").toString();
         if (authIds.contains("15")) {
@@ -56,17 +56,17 @@ public class DepartmentServiceImpl implements DepartmentService {
                     ArrayList<Department> departments = new ArrayList<>();
                     departments.add(department);
                     data.put("departmentList", JSON.toJSONString(departments));
-                    responseBean.buildOk(data);
+                    return responseBean.buildOk(data);
                 }else {
                     // 这里返回空数据
-                    responseBean.buildOkNoData();
+                    return responseBean.buildOkNoData();
                 }
             }else{
                 // 这里返回也是空数据
-                responseBean.buildOkNoData();
+                return responseBean.buildOkNoData();
             }
         }
-        return responseBean;
+        return responseBean.buildOkInitNull("departmentList");
     }
 
     /**
@@ -87,7 +87,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 获取部门信息，主要包含id、title
      */
-    public ResponseBean getDepartmentIdTitle() {
+    public String getDepartmentIdTitle() {
         QueryWrapper<Department> departmentQueryWrapper = new QueryWrapper<Department>()
                 .select("id", "title", "super_id", "whether")
                 .eq("state", 0)
@@ -99,31 +99,29 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 根据id 查询部门数据
      * @param departmentId 部门id
      */
-    public ResponseBean getDepartment(Integer departmentId) {
+    public String getDepartment(Integer departmentId) {
         Department department = departmentMapper.selectById(departmentId);
         Integer superId = department.getSuperId();
         department.setSuperId(superId==0?null:superId);
         HashMap<String, Object> map = new HashMap<>(1);
         map.put("department", department);
-        responseBean.buildOk(map);
-        return responseBean;
+        return responseBean.buildOk(map);
     }
 
     /**
      * 新建/修改部门数据
      * @param department 部门对象
      */
-    public ResponseBean saveDepartment(String token, Department department) {
+    public String saveDepartment(String token, Department department) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String username = JwtUtil.getUsername(token);
         if (department.getId() == 0){
-            responseBean =  insertDepartment(username, department, timestamp);
+            return insertDepartment(username, department, timestamp);
         }else{
             Department oldDepartment = departmentMapper.selectById(department.getId());
             department.setWhether(oldDepartment.getWhether());
-            responseBean = updateDepartment(username, token, department, timestamp);
+            return updateDepartment(username, token, department, timestamp);
         }
-        return responseBean;
     }
 
 
@@ -132,7 +130,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param department 部门对象
      * @param timestamp 时间戳
      */
-    private ResponseBean updateDepartment(String username, String token, Department department, Timestamp timestamp){
+    private String updateDepartment(String username, String token, Department department, Timestamp timestamp){
         // 获取旧部门数据
         Department oldDepartment = departmentMapper.selectOne(new QueryWrapper<Department>().select("id", "state", "super_id").eq("id", department.getId()));
         // 修改部门
@@ -173,13 +171,11 @@ public class DepartmentServiceImpl implements DepartmentService {
                 }
             }
             logService.createLog("修改部门", username, "修改部门:"+ department.getTitle() + ",修改成功");
-            responseBean.buildOkMsg("修改部门成功");
+            return responseBean.buildOkMsg("修改部门成功");
         }else {
-            responseBean.buildNoDataMsg("修改部门失败，请检查数据库");
             logService.createLog("修改部门", username,"修改部门:"+ department.getTitle() + ",修改失败,数据库可能存在异常");
+            return responseBean.buildNoDataMsg("修改部门失败，请检查数据库");
         }
-        responseBean.buildOkNoData();
-        return responseBean;
     }
 
     /**
@@ -187,7 +183,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param token     token
      * @param id        部门id
      */
-    public ResponseBean updateDepartmentState(String token, Integer id){
+    public String updateDepartmentState(String token, Integer id){
         Department department = departmentMapper.selectById(id);
         Integer state = department.getState().equals(1)?0:1;
         Claims claims = JwtUtil.getClaims(token);
@@ -198,9 +194,8 @@ public class DepartmentServiceImpl implements DepartmentService {
             Integer userId = Integer.valueOf(claims.get("jti").toString());
             // 将与该部门及下级部门关联的用户部门id指向为null       并且  自身是该部门负责人
             if (state.equals(1) && department.getUserId().equals(userId)){
-                responseBean.buildNoDataMsg("请勿禁用自身负责部门");
                 logService.createLog("修改部门状态", username,"修改部门状态:"+ department.getTitle() + ",修改失败,自身是该部门负责人,无法禁用所在部门");
-                return responseBean;
+                return responseBean.buildNoDataMsg("请勿禁用自身负责部门");
             }else {
                 ArrayList<Integer> childrenIds = new ArrayList<>();
                 // 获取全部的子部门id
@@ -214,7 +209,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     // 将部门负责人重置
                     departmentMapper.update(null, new UpdateWrapper<Department>().in("id", childrenIds).set("user_id", null).last("limit " + childrenIds.size()));
                 }
-                responseBean.buildOkMsg("状态修改成功");
+                return responseBean.buildOkMsg("状态修改成功");
             }
         }else {
             UpdateWrapper<Department> departmentUpdateWrapper = new UpdateWrapper<>();
@@ -222,10 +217,8 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .set("state", state)
                     .last("limit 1");
             departmentMapper.update(null, departmentUpdateWrapper);
-            responseBean.buildOkMsg("状态修改成功");
+            return responseBean.buildOkMsg("状态修改成功");
         }
-        logService.createLog("修改部门状态", username,"修改部门状态:"+ department.getTitle() + ",修改成功");
-        return responseBean;
     }
 
 
@@ -234,7 +227,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param department    部门对象
      * @param timestamp     时间戳
      */
-    private ResponseBean insertDepartment(String username, Department department, Timestamp timestamp){
+    private String insertDepartment(String username, Department department, Timestamp timestamp){
         department.setCreateDate(timestamp);
         department.setUpdateDate(timestamp);
         int insert = departmentMapper.insert(department);
@@ -248,19 +241,18 @@ public class DepartmentServiceImpl implements DepartmentService {
                 }
             }
             logService.createLog("新建部门", username,"新建部门:"+ department.getTitle() + ",新建成功");
-            responseBean.buildOkMsg("新增部门成功");
+            return responseBean.buildOkMsg("新增部门成功");
         }else {
             logService.createLog("新建部门", username,"新建部门:"+ department.getTitle() + ",新建失败,数据库可能存在异常");
-            responseBean.buildNoDataMsg("新增部门失败，请检查数据库");
+            return responseBean.buildNoDataMsg("新增部门失败，请检查数据库");
         }
-        return responseBean;
     }
 
     /**
      * 根据id 删除部门
      * @param id    部门id
      */
-    public ResponseBean deleteDepartment(String token, Integer id) {
+    public String deleteDepartment(String token, Integer id) {
         Department department = departmentMapper.selectById(id);
         if (department.getWhether().equals(1)) {
             ArrayList<Integer> childrenIds = new ArrayList<>();
@@ -271,8 +263,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         String username = JwtUtil.getUsername(token);
         logService.createLog("删除部门", username,"删除部门:"+ department.getTitle() + ",删除成功");
-        responseBean.buildOkMsg(department.getTitle() + " 部门及下级部门删除成功");
-        return responseBean;
+        return responseBean.buildOkMsg(department.getTitle() + " 部门及下级部门删除成功");
     }
 
     public void getChildrenIds(List<Integer> ids, Integer superId){
@@ -293,7 +284,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 根据条件返回多级部门列表
      * @param departmentQueryWrapper    查询条件
      */
-    private ResponseBean formatDepartments(QueryWrapper<Department> departmentQueryWrapper){
+    private String formatDepartments(QueryWrapper<Department> departmentQueryWrapper){
         // 查询的部门数据
         List<Department> departments = departmentMapper.selectList(departmentQueryWrapper);
         // 该mao用来承载数据，返回前端
@@ -317,11 +308,10 @@ public class DepartmentServiceImpl implements DepartmentService {
                 }
                 map.put("departmentList", JSON.toJSONString(getChild(list, departments)));
             }
-            responseBean.buildOk(map);
+            return responseBean.buildOk(map);
         }else {
-            responseBean.buildNoData();
+            return responseBean.buildNoData();
         }
-        return responseBean;
     }
 
     /**

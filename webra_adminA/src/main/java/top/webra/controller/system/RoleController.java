@@ -30,7 +30,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @GetMapping
-    public ResponseBean getTableDate(String title, String code, Integer state, String createDateStart, String createDateEnd, Integer page){
+    public String getTableDate(String title, String code, Integer state, String createDateStart, String createDateEnd, Integer page){
         return roleService.getRoleList(title,code,state,createDateStart,createDateEnd,page);
     }
 
@@ -40,7 +40,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @GetMapping("/get")
-    public ResponseBean getRole(Integer id){
+    public String getRole(Integer id){
         return roleService.getRole(id);
     }
 
@@ -49,7 +49,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping("/tree")
-    public ResponseBean getRoleTree(){
+    public String getRoleTree(){
         return roleService.getRoleTree();
     }
 
@@ -60,7 +60,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @PostMapping("/save")
-    public ResponseBean saveRole(@RequestHeader("token") String token, Role role){
+    public String saveRole(@RequestHeader("token") String token, Role role){
         return roleService.saveRole(token, role);
     }
 
@@ -70,7 +70,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @DeleteMapping("/delete")
-    public ResponseBean deleteRole(@RequestHeader("token") String token, int id){
+    public String deleteRole(@RequestHeader("token") String token, int id){
         return roleService.deleteRole(token, id);
     }
 
@@ -80,7 +80,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @DeleteMapping("/deletes")
-    public ResponseBean deleteRoles(@RequestHeader("token") String token, String ids){
+    public String deleteRoles(@RequestHeader("token") String token, String ids){
         return roleService.deleteRoles(token, ids);
     }
 
@@ -90,7 +90,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @PostMapping("/state")
-    public ResponseBean blockRole(@RequestHeader("token") String token, int id){
+    public String blockRole(@RequestHeader("token") String token, int id){
         return roleService.updateRoleSwitch(token, id);
     }
 

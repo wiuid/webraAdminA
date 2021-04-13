@@ -70,11 +70,9 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 response.setStatus(200);
                 response.setCharacterEncoding("utf-8");
                 PrintWriter writer = response.getWriter();
-                responseBean.buildNotLogin("登录超时");
-                writer.write(JSON.toJSONString(responseBean));
+                writer.write(responseBean.buildNotLogin("登录超时"));
                 writer.flush();
                 log.info("token 过期");
-
             }
         }else {
             // 没有token的情况，判断路径
@@ -84,8 +82,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 response.setStatus(200);
                 response.setCharacterEncoding("utf-8");
                 PrintWriter writer = response.getWriter();
-                responseBean.buildNotLogin("当前未登录，跳转至登录页");
-                writer.write(JSON.toJSONString(responseBean));
+                writer.write(responseBean.buildNotLogin("当前未登录，跳转至登录页"));
                 writer.flush();
             }else {
                 filterChain.doFilter(httpServletRequest, response);

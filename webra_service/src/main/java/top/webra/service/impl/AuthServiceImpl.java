@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 获得选择树，用于角色选择对应的权限
      */
-    public ResponseBean getTree() {
+    public String getTree() {
         // 寄存嵌套后的数据
         ArrayList<Auth> auths = new ArrayList<>();
         // 查询的源数据
@@ -95,8 +95,7 @@ public class AuthServiceImpl implements AuthService {
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("authTree", auths);
-        responseBean.buildOk(data);
-        return responseBean;
+        return responseBean.buildOk(data);
     }
 
     /**

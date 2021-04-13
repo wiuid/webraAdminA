@@ -1,5 +1,6 @@
 package top.webra.controller.system;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,7 @@ public class AuthController {
     private AuthServiceImpl authService;
     @PreAuthorize("hasRole('ROLE_auth')")
     @GetMapping("tree")
-    public ResponseBean getAuthTree(){
+    public String getAuthTree(){
         return authService.getTree();
     }
 }

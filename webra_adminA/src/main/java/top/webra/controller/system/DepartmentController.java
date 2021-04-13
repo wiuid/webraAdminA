@@ -1,5 +1,6 @@
 package top.webra.controller.system;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @GetMapping
-    public ResponseBean getTableDate(@RequestHeader("token") String token){
+    public String getTableDate(@RequestHeader("token") String token){
         return departmentService.getDepartmentList(token);
     }
 
@@ -37,7 +38,7 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @GetMapping("/get")
-    public ResponseBean getDepartment(Integer id){
+    public String getDepartment(Integer id){
         return departmentService.getDepartment(id);
     }
 
@@ -46,7 +47,7 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping("/tree")
-    public ResponseBean getDepartmentIdTitle(){
+    public String getDepartmentIdTitle(){
         return departmentService.getDepartmentIdTitle();
     }
 
@@ -57,14 +58,14 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @PostMapping("/save")
-    public ResponseBean saveUser(@RequestHeader("token")String token, Department department){
+    public String saveUser(@RequestHeader("token")String token, Department department){
         return departmentService.saveDepartment(token, department);
     }
 
     // 修改部门状态
     @PreAuthorize("hasRole('ROLE_department')")
     @PostMapping("/state")
-    public ResponseBean updateState(@RequestHeader("token")String token, Integer id){
+    public String updateState(@RequestHeader("token")String token, Integer id){
         return departmentService.updateDepartmentState(token, id);
     }
 
@@ -74,7 +75,7 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @DeleteMapping("/delete")
-    public ResponseBean deleteDepartment(@RequestHeader("token")String token, Integer id){
+    public String deleteDepartment(@RequestHeader("token")String token, Integer id){
         return departmentService.deleteDepartment(token, id);
     }
 }
