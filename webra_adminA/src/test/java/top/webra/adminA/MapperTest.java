@@ -3,8 +3,6 @@ package top.webra.adminA;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.github.pagehelper.PageHelper;
-import io.jsonwebtoken.Claims;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -12,16 +10,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.JsonbTester;
-import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.ResourceUtils;
 import top.webra.mapper.*;
 import top.webra.pojo.*;
-import top.webra.util.JwtUtil;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,8 +47,6 @@ public class MapperTest {
         }
     }
 
-    @Autowired
-    private UserMapper userMapper;
     @Test
     public void userTest(){
     }
@@ -74,7 +65,7 @@ public class MapperTest {
     @Test
     public void authUserAsideTest(){
 
-        ArrayList<Integer> integers = new ArrayList<Integer>();
+        ArrayList<Integer> integers = new ArrayList<>();
         integers.add(1);
         integers.add(2);
         integers.add(3);
@@ -121,7 +112,7 @@ public class MapperTest {
         try {
             File excel = ResourceUtils.getFile("classpath:static/excel/templateExportPost.xls");
             FileInputStream fileInputStream = new FileInputStream(excel);
-            List<Post> posts = postMapper.selectList(new QueryWrapper<Post>());
+            List<Post> posts = postMapper.selectList(new QueryWrapper<>());
             HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
             HSSFSheet sheet = workbook.getSheetAt(0);
             int rowIndex = 1;
@@ -136,13 +127,11 @@ public class MapperTest {
                 row.createCell(5).setCellValue(simpleDateFormat.format(post.getCreateDate()));
                 row.createCell(6).setCellValue(simpleDateFormat.format(post.getUpdateDate()));
             }
-            FileOutputStream fileOutputStream = new FileOutputStream(new File("C:\\Users\\webra\\Desktop\\岗位信息表.xls"));
+            FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\webra\\Desktop\\岗位信息表.xls");
             workbook.write(fileOutputStream);
             fileOutputStream.close();
             workbook.close();
             System.out.println("数据导出完毕");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

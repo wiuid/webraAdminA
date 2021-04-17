@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import top.webra.bean.ResponseBean;
 import top.webra.pojo.User;
 import top.webra.service.impl.UserServiceImpl;
 
@@ -36,14 +35,14 @@ public class UserController {
     public String getTableDate(@RequestHeader("token") String token, Integer departmentId, String username,Integer phone, Integer state, String createDateStart, String createDateEnd, Integer page){
         return userService.getUserList(token, departmentId,username,phone,state,createDateStart,createDateEnd,page);
     }
-    // 获取单用户信息
+    /** 获取单用户信息 */
     @GetMapping("/get")
     @PreAuthorize("hasRole('ROLE_user')")
     public String getUser(Integer id){
         return userService.selectUser(id);
     }
 
-    // 获取全部用户名信息 用于选择
+    /** 获取全部用户名信息 用于选择 */
     @GetMapping("/tree")
     public String getUserByNickname(){
         return userService.selectUserByNickname();
@@ -59,14 +58,14 @@ public class UserController {
         return userService.saveUser(token, user);
     }
 
-    // 修改用户密码
+    /** 修改用户密码 */
     @PreAuthorize("hasRole('ROLE_user')")
     @PostMapping("/password")
     public String updatePassword(@RequestHeader("token") String token, Integer id, String rootPassword, String userPassword){
         return userService.updatePassword(token, id, rootPassword, userPassword);
     }
 
-    // 修改用户状态
+    /** 修改用户状态 */
     @PreAuthorize("hasRole('ROLE_user')")
     @PostMapping("/state")
     public String updateUserState(@RequestHeader("token") String token, Integer id){

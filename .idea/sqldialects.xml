@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/webra_mapper/src/main/resources/mybatis/mapper/InformMapper.xml" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/webra_mapper/src/main/resources/mybatis/mapper/LogMapper.xml" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/webra_mapper/src/main/resources/mybatis/mapper/PostMapper.xml" dialect="Redshift" />
+    <file url="file://$PROJECT_DIR$/webra_mapper/src/main/resources/mybatis/mapper/RoleMapper.xml" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/webra_mapper/src/main/resources/mybatis/mapper/UserMapper.xml" dialect="GenericSQL" />
+  </component>
+</project>

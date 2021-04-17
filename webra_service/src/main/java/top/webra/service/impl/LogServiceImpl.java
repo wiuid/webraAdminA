@@ -38,7 +38,14 @@ public class LogServiceImpl implements LogService {
     private ResponseBean responseBean;
     @Autowired
     private LogMapper logMapper;
-    // 获取日志
+
+    /**
+     * @param title             日志标题
+     * @param createDateStart   创建开始时间
+     * @param createDateEnd     创建结束时间
+     * @param page              页码
+     * @return  日志列表
+     */
     @Override
     public String getLogList(String title, String createDateStart, String createDateEnd, Integer page) {
         // 时间参数处理
@@ -53,14 +60,17 @@ public class LogServiceImpl implements LogService {
         PageInfo<Log> logPageInfo = new PageInfo<>(logList);
 
         // 整理数据并返回
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(3);
         data.put("logList", logList);
         data.put("total",logPageInfo.getTotal());
         data.put("page",logPageInfo.getPages());
         return responseBean.buildOk(data);
     }
 
-    // 删除日志
+    /**
+     * @param id    日志id
+     * @return  yes/no
+     */
     @Override
     public String deleteLog(Integer id) {
         int i = logMapper.deleteById(id);
@@ -71,7 +81,11 @@ public class LogServiceImpl implements LogService {
         }
     }
 
-    // 批量删除日志
+    /**
+     * @param token  权限验证
+     * @param ids   字符串类型的id列表
+     * @return yes/no
+     */
     @Override
     public String deleteLogs(String token, String ids) {
         String[] split = ids.split(",");
@@ -90,13 +104,14 @@ public class LogServiceImpl implements LogService {
         }
     }
 
-    // 导出日志
+    /**
+     * @param token 权限验证
+     * @param response 响应
+     */
     @Override
     public void exportLog(String token, HttpServletResponse response) {
         try {
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("static/excel/templateExportLog.xls");
-//            File excel = ResourceUtils.getFile("classpath:static/excel/templateExportLog.xls");
-//            FileInputStream fileInputStream = new FileInputStream(excel);
             List<Log> logs = logMapper.selectList(new QueryWrapper<>());
             // 根据模板创建一个工作簿
             HSSFWorkbook workbook = new HSSFWorkbook(resourceAsStream);
@@ -132,7 +147,10 @@ public class LogServiceImpl implements LogService {
         }
     }
 
-    //清空日志
+    /**
+     * @param token 权限验证
+     * @return yes/no
+     */
     @Override
     public String emptyLog(String token) {
         String username = JwtUtil.getUsername(token);
@@ -147,7 +165,11 @@ public class LogServiceImpl implements LogService {
         }
     }
 
-    // 创建日志
+    /**
+     * @param title     日志标题
+     * @param username  操作用户名
+     * @param msg       具体消息
+     */
     public void createLog(String title, String username, String msg){
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Log log = new Log(null, title, username, msg, timestamp);

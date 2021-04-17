@@ -42,7 +42,7 @@ public class SelfAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         log.info("获取前端发送的账号："+username+ "密码:"+password);
-        if (!username.equals("") || !password.equals("")){
+        if (!"".equals(username) || !"".equals(password)){
             // 是否存在该用户
             UserDetails userInfo = userLoginService.loadUserByUsername(username);
             // 该用户密码是否正确

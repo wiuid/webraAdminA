@@ -7,12 +7,9 @@ import oshi.software.os.OperatingSystem;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -158,8 +155,8 @@ public class OshiTest {
     public void oshiNetworkTest(){
         try {
             InetAddress localHost = InetAddress.getLocalHost();
-            String s = localHost.getHostAddress().toString();
-            String t = localHost.getHostName().toString();//获得本机名称
+            String s = localHost.getHostAddress();
+            String t = localHost.getHostName();//获得本机名称
             System.out.println(s);
             System.out.println(t);
         } catch (UnknownHostException e) {
@@ -178,7 +175,7 @@ public class OshiTest {
         System.out.println("堆初始化大小:"+memoryMXBean.getHeapMemoryUsage().getInit());
         System.out.println("堆最大值:"+memoryMXBean.getHeapMemoryUsage().getMax());
         System.out.println("nonHeap初始值:"+memoryMXBean.getNonHeapMemoryUsage().getInit());
-        System.out.println("nonheap最大值:"+memoryMXBean.getNonHeapMemoryUsage().getMax());
+        System.out.println("NonHeap最大值:"+memoryMXBean.getNonHeapMemoryUsage().getMax());
 
     }
 }

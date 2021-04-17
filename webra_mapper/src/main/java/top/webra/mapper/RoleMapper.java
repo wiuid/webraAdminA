@@ -18,7 +18,15 @@ import java.util.List;
 @Mapper
 @Component
 public interface RoleMapper extends BaseMapper<Role> {
-
+    /**
+     * 查询角色
+     * @param title             角色名
+     * @param code              角色代码
+     * @param state             角色状态
+     * @param createDateStart   开始
+     * @param createDateEnd     结束
+     * @return  角色列表
+     */
     List<Role> getRoleList(@Param("title") String title,
                            @Param("code") String code,
                            @Param("state") Integer state,

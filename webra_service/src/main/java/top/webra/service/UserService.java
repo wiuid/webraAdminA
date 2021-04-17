@@ -1,6 +1,5 @@
 package top.webra.service;
 
-import top.webra.bean.ResponseBean;
 import top.webra.pojo.User;
 
 /**
@@ -21,6 +20,7 @@ public interface UserService {
      * @param createDateStart   创建起始范围
      * @param createDateEnd     创建结束范围
      * @param page              页码
+     * @return 用户列表
      */
     String getUserList(String token,
                              Integer departmentId,

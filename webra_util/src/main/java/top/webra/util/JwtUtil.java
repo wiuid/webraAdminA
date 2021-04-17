@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
  */
 @Data
 @Component
-//@ConfigurationProperties("jwt.config")
 public class JwtUtil {
     @Autowired
     private Jwt jwt;
@@ -47,7 +46,7 @@ public class JwtUtil {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         // 组合header
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(2);
         map.put("alg", "HS256");
         map.put("typ", "JWT");
         JwtBuilder builder = Jwts.builder()
@@ -86,17 +85,17 @@ public class JwtUtil {
         return JwtUtil.parseJWT(token);
     }
 
-    // 解析token 获取 用户id
+    /** 解析token 获取 用户id */
     public static Integer getUserId(String token){
         Claims claims = getClaims(token);
         return Integer.valueOf(claims.get("jti").toString());
     }
-    // 解析token 获取 账户
+    /** 解析token 获取 账户 */
     public static String getUsername(String token){
         Claims claims = getClaims(token);
         return claims.get("sub").toString();
     }
-    // 解析token 获取 用户权限集合
+    /** 解析token 获取 用户权限集合 */
     public static List<Integer> getRoles(String token){
         String stringRoles = getStringRoles(token);
         List<String> authIdsList= Arrays.asList(stringRoles .split(",")).stream().map(s -> (s.trim())).collect(Collectors.toList());
@@ -106,7 +105,7 @@ public class JwtUtil {
         }
         return authIds;
     }
-    // 解析token 获取 用户权限集合
+    /** 解析token 获取 用户权限集合 */
     public static String getStringRoles(String token){
         Claims claims = getClaims(token);
         return claims.get("roles").toString();

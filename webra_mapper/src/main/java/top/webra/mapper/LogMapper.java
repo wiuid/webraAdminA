@@ -19,11 +19,21 @@ import java.util.List;
 @Mapper
 @Component
 public interface LogMapper extends BaseMapper<Log> {
-
+    /**
+     * 日志查询
+     * @param username          日志标题
+     * @param createDateStart   创建时间开始
+     * @param createDateEnd     创建时间结束
+     * @return              日志列表
+     */
     List<Log> getLogList(@Param("title") String username,
                            @Param("createDateStart") String createDateStart,
                            @Param("createDateEnd") String createDateEnd);
 
+    /**
+     * 清空日志
+     * @return  yes/no
+     */
     @Update("truncate table wra_log")
     Integer emptyLog();
 }

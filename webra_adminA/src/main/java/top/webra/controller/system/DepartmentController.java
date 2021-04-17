@@ -1,11 +1,9 @@
 package top.webra.controller.system;
 
-import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import top.webra.bean.ResponseBean;
 import top.webra.pojo.Department;
 import top.webra.service.impl.DepartmentServiceImpl;
 
@@ -62,7 +60,9 @@ public class DepartmentController {
         return departmentService.saveDepartment(token, department);
     }
 
-    // 修改部门状态
+    /**
+     * 修改部门状态
+     */
     @PreAuthorize("hasRole('ROLE_department')")
     @PostMapping("/state")
     public String updateState(@RequestHeader("token")String token, Integer id){

@@ -20,7 +20,7 @@ import top.webra.bean.ResponseBean;
 public class AboutController {
     @Autowired
     private ResponseBean responseBean;
-    // 获取相关页面信息（可以删除）
+
     @GetMapping
     public ResponseBean getTableDate(){
         responseBean = ResponseBean.ok("success");

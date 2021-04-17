@@ -1,5 +1,7 @@
 package top.webra.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.jsonwebtoken.Claims;
@@ -48,13 +50,12 @@ public class InfoServiceImpl implements InfoService {
     @Autowired
     private RoleMapper roleMapper;
 
-    // 获取头像
+    /** 获取头像 */
     @Override
     public String getAvatar(String token) {
-        JwtUtil jwtUtil = new JwtUtil();
-        Claims claims = jwtUtil.parseJWT(token);
+        Claims claims = JwtUtil.parseJWT(token);
         User user = userMapper.selectOne(new QueryWrapper<User>().select("avatar").eq("id", CastUtil.toInteger(claims.get("jti"))));
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(1);
         data.put("avatar", user.getAvatar());
         return responseBean.buildOk(data);
     }
@@ -66,22 +67,30 @@ public class InfoServiceImpl implements InfoService {
     @Override
     public String getInfo(String token) {
         // 存储数据
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(2);
         // 解析token
         Integer userId = JwtUtil.getUserId(token);
         // 获得用户信息
         User user = userMapper.selectOne(new QueryWrapper<User>().select("id", "username", "nickname", "avatar", "phone", "email", "create_date","department_id","role_id").eq("id", userId));
-        data.put("user", user);
+        HashMap map = JSONObject.parseObject(JSON.toJSONString(user), HashMap.class);
+        map.remove("department_id");
+        map.remove("role_id");
         if (user.getDepartmentId() != null){
             // 获取部门名
             Department department = departmentMapper.selectOne(new QueryWrapper<Department>().select("title").eq("id", user.getDepartmentId()));
-            data.put("departmentTitle", department.getTitle());
-        }else {
-            data.put("departmentTitle",null);
+            map.put("departmentTitle", department.getTitle());
         }
         // 获取角色名
         Role role = roleMapper.selectOne(new QueryWrapper<Role>().select("title").eq("id", user.getRoleId()));
-        data.put("roleTitle", role.getTitle());
+        map.put("roleTitle", role.getTitle());
+
+        HashMap<String, Object> info = new HashMap<>(3);
+        info.put("nickname", user.getNickname());
+        info.put("phone", user.getPhone());
+        info.put("email", user.getEmail());
+
+        data.put("userInfo", map);
+        data.put("info", info);
         return responseBean.buildOk(data);
     }
 
@@ -136,7 +145,12 @@ public class InfoServiceImpl implements InfoService {
         }
     }
 
-    // 上传头像
+    /**
+     * @param token 安全判定
+     * @param id    用户id
+     * @param base64    图像信息
+     * @return  yes/no
+     */
     @Override
     public String updateAvatar(String token, Integer id, String base64) {
         if (judge(token, id)){
@@ -145,7 +159,8 @@ public class InfoServiceImpl implements InfoService {
                 // 解码
                 byte[] b = decoder.decode(base64);
                 for (int i = 0; i < b.length; i++) {
-                    if (b[i] < 0) {// 调整异常数据
+                    // 调整异常数据
+                    if (b[i] < 0) {
                         b[i] += 256;
                     }
                 }
@@ -187,8 +202,7 @@ public class InfoServiceImpl implements InfoService {
     }
 
     private Boolean judge(String token, Integer id){
-        JwtUtil jwtUtil = new JwtUtil();
-        Claims claims = jwtUtil.parseJWT(token);
+        Claims claims = JwtUtil.parseJWT(token);
         return CastUtil.toInteger(claims.get("jti")).equals(id);
     }
 }

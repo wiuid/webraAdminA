@@ -39,23 +39,23 @@ public class UserLogin implements UserDetails {
     public String getUsername() {
         return this.username;
     }
-    // 账户是否过期
+    /** 账户是否过期 */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-    // 账户是否锁定
+    /** 账户是否锁定 */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-    // 账户凭证是否过期
+    /** 账户凭证是否过期 */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    // 是否启用
+    /** 是否启用 */
     @Override
     public boolean isEnabled() {
         return this.state.equals(0);

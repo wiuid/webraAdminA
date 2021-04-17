@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import top.webra.bean.ResponseBean;
 import top.webra.service.impl.MonitoringServiceImpl;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class MonitoringController {
     private MonitoringServiceImpl monitoringService;
 
     /**
-     * 需要第三方组件oshi
+     * 需要第三方组件 oshi
      * github：https://github.com/oshi/oshi
      * 中文教程：https://www.cnblogs.com/weechang/p/12493978.html
      * 中文教程：https://blog.csdn.net/only3c/article/details/90475327
@@ -47,7 +46,7 @@ public class MonitoringController {
         Map<String, String> diskInfo = monitoringService.getDiskInfo();
         Map<String, String> systemInfo = monitoringService.getSystemInfo();
         Map<String, String> jvmInfo = monitoringService.getJvmInfo();
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(5);
         data.put("cpu",cpuInfo);
         data.put("memory",memoryInfo);
         data.put("disk",diskInfo);

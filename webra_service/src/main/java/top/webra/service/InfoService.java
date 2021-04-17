@@ -1,7 +1,5 @@
 package top.webra.service;
 
-import top.webra.bean.ResponseBean;
-
 /**
  * Created with IntelliJ IDEA.
  *
@@ -13,12 +11,14 @@ public interface InfoService {
     /**
      * 根据token获取个人头像地址
      * @param token     解析
+     * @return 头像地址
      */
     String getAvatar(String token);
 
     /**
      * 从token中获取用户id，根据用户id返回个人信息
      * @param token 解析
+     * @return 个人信息
      */
     String getInfo(String token);
 
@@ -29,6 +29,7 @@ public interface InfoService {
      * @param nickname      昵称
      * @param phone         手机
      * @param email         邮箱
+     * @return yes/no
      */
     String setInfo(String token,
                          Integer id,
@@ -43,6 +44,7 @@ public interface InfoService {
      * @param id            用户id
      * @param oldPassword   旧密码
      * @param newPassword   新密码
+     * @return yes/no
      */
     String setPassword(String token,
                              Integer id,
@@ -54,6 +56,7 @@ public interface InfoService {
      * @param token 安全判定
      * @param id    用户id
      * @param base64    图像信息
+     * @return yes/no
      */
     String updateAvatar(String token, Integer id, String base64);
 }

@@ -63,7 +63,7 @@ public class InformServiceImpl implements InformService {
         List<Inform> informsOrderAsc = informMapper.getInformsOrderAsc(title,state,createDateStart,createDateEnd);
         PageInfo<Inform> informsOrderAscInfo = new PageInfo<>(informsOrderAsc);
 
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(3);
         data.put("informList", informsOrderAsc);
         data.put("total",informsOrderAscInfo.getTotal());
         data.put("page",informsOrderAscInfo.getPages());
@@ -81,7 +81,7 @@ public class InformServiceImpl implements InformService {
         if (inform == null){
             return responseBean.buildNoData();
         }else {
-            HashMap<String, Object> data = new HashMap<>();
+            HashMap<String, Object> data = new HashMap<>(1);
             data.put("inform", inform);
             return responseBean.buildOk(data);
         }

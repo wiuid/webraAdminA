@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class OtherTest {
     @Test
     public void stringToList(){
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ArrayList<Integer> ids = new ArrayList<>();
         ids.add(1);
         ids.add(1);
         ids.add(1);

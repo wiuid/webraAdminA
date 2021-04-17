@@ -1,9 +1,6 @@
 package top.webra.service;
 
-import top.webra.bean.ResponseBean;
-
 import java.util.Map;
-
 /**
  * Created with IntelliJ IDEA.
  *
@@ -15,12 +12,14 @@ public interface AuthService {
 
     /**
      * 根据token解析出用户的权限信息，用来动态生成路由
-     * @param token 解析
+     * @param   token 解析
+     * @return  路由
      */
     Map<String, Object> getUserAside(String token);
 
     /**
-     * 获得tree列表
+     * 获得角色列表，用于选择
+     * @return  角色列表
      */
     String getTree();
 }

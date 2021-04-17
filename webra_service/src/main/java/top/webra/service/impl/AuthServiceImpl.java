@@ -38,8 +38,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Map<String, Object> getUserAside(String token) {
         // 解析权限
-        JwtUtil jwtUtil = new JwtUtil();
-        Claims claims = jwtUtil.parseJWT(token);
+        Claims claims = JwtUtil.parseJWT(token);
         Object roles = claims.get("roles");
         String[] split = String.valueOf(roles).split(",");
         ArrayList<Integer> integers = new ArrayList<>();
@@ -70,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
         }
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(1);
         data.put("routes", auths);
         return data;
     }
@@ -95,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
         // 嵌套数据
         getChildren(auths, authList);
 
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(1);
         data.put("authTree", auths);
         return responseBean.buildOk(data);
     }

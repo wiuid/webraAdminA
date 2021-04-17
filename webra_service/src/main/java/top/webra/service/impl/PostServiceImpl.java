@@ -9,7 +9,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.PostMapper;
 import top.webra.pojo.Post;
@@ -53,7 +52,7 @@ public class PostServiceImpl implements PostService {
         List<Post> postList = postMapper.getPostList(title, state);
         PageInfo<Post> postPageInfo = new PageInfo<>(postList);
 
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(3);
         data.put("postList", postList);
         data.put("total", postPageInfo.getTotal());
         data.put("page", postPageInfo.getPages());
@@ -68,16 +67,19 @@ public class PostServiceImpl implements PostService {
     public String getPostById(Integer id) {
         QueryWrapper<Post> postQueryWrapper = new QueryWrapper<Post>().select("id", "title", "serial", "state", "remark").eq("id", id).last("limit 1");
         Post post = postMapper.selectOne(postQueryWrapper);
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(1);
         data.put("post", post);
         return responseBean.buildOk(data);
     }
 
-    // 获取岗位 用于用户选择
+    /**
+     * 获取岗位 用于用户选择
+     * @return 岗位列表
+     */
     @Override
     public String getPostTree() {
         List<Post> posts = postMapper.selectList(new QueryWrapper<Post>().select("id", "title"));
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(1);
         data.put("postList", posts);
         return responseBean.buildOk(data);
     }
@@ -190,7 +192,10 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    // 导出岗位
+    /**
+     * 导出岗位
+     * @param response 响应
+     */
     @Override
     public void exportPosts(HttpServletResponse response) {
         try {

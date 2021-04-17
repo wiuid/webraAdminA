@@ -1,6 +1,5 @@
 package top.webra.filter;
 
-import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +40,13 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 从请求头中提取token字段
-        String authHeader = httpServletRequest.getHeader("token");//获取header中的验证信息
+        //获取header中的验证信息
+        String authHeader = httpServletRequest.getHeader("token");
 
         if (authHeader != null) {
-            JwtUtil jwtUtil = new JwtUtil();
             try {
                 // 将JWT 产生的token过期的报错进行吸收
-                Claims claims = jwtUtil.parseJWT(authHeader);
+                Claims claims = JwtUtil.parseJWT(authHeader);
                 String subject = claims.getSubject();
                 // 获取用户名username
                 String username = String.valueOf(subject);

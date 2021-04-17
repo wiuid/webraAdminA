@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import top.webra.bean.ResponseBean;
 import top.webra.service.impl.LogServiceImpl;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,9 +20,6 @@ import java.util.List;
 @PreAuthorize("hasRole('ROLE_log')")
 @RequestMapping("/system/site/log")
 public class LogController {
-    @Autowired
-    private ResponseBean responseBean;
-
     @Autowired
     private LogServiceImpl logService;
     /**

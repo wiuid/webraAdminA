@@ -72,7 +72,7 @@ public class RoleServiceImpl implements RoleService{
         // 查询获得详细信息
         PageInfo<Role> roleOrderAscInfo = new PageInfo<>(roleList);
 
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(3);
         data.put("roleList", roleList);
         data.put("total",roleOrderAscInfo.getTotal());
         data.put("page",roleOrderAscInfo.getPages());
@@ -90,7 +90,7 @@ public class RoleServiceImpl implements RoleService{
         if (role == null){
             return responseBean.buildNoData();
         }else {
-            HashMap<String, Object> data = new HashMap<>();
+            HashMap<String, Object> data = new HashMap<>(1);
             data.put("role", role);
             return responseBean.buildOk(data);
         }
@@ -228,7 +228,7 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public String getRoleTree() {
         List<Role> roles = roleMapper.selectList(new QueryWrapper<Role>().select("id", "title"));
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(1);
         data.put("roleList", roles);
         return responseBean.buildOk(data);
     }

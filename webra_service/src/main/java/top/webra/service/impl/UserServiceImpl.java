@@ -117,14 +117,18 @@ public class UserServiceImpl implements UserService {
 
 
         // 整理数据并返回
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(3);
         data.put("userList", userList);
         data.put("total",userPageInfo.getTotal());
         data.put("page",userPageInfo.getPages());
         return responseBean.buildOk(data);
     }
 
-    // 根据id查询用户
+    /**
+     * 根据id查询用户
+     * @param userId 用户id
+     * @return 用户信息
+     */
     @Override
     public String selectUser(Integer userId){
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<User>()
@@ -135,7 +139,7 @@ public class UserServiceImpl implements UserService {
         if (user == null){
             return responseBean.buildNoData();
         }else {
-            HashMap<String, Object> data = new HashMap<>();
+            HashMap<String, Object> data = new HashMap<>(1);
             data.put("user",user);
             return responseBean.buildOk(data);
         }
@@ -149,11 +153,16 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.select("id", "nickname");
         List<User> users = userMapper.selectList(userQueryWrapper);
-        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> data = new HashMap<>(1);
         data.put("userList", JSON.toJSONString(users));
         return responseBean.buildOk(data);
     }
-    // 删除用户
+    /**
+     * 删除用户
+     * @param token 权限验证
+     * @param id 用户id
+     * @return yes/no
+     */
     @Override
     public String deleteUser(String token, Integer id) {
         Claims claims = JwtUtil.getClaims(token);

@@ -1,6 +1,5 @@
 package top.webra.hander;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,6 @@ import top.webra.mapper.UserMapper;
 import top.webra.pojo.Role;
 import top.webra.pojo.User;
 import top.webra.service.impl.AuthServiceImpl;
-import top.webra.service.impl.UserLoginServiceImpl;
 import top.webra.util.CastUtil;
 import top.webra.util.JwtUtil;
 

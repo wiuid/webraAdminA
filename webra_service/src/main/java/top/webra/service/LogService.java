@@ -1,7 +1,5 @@
 package top.webra.service;
 
-import top.webra.bean.ResponseBean;
-
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -19,6 +17,7 @@ public interface LogService {
      * @param createDateStart   创建开始时间
      * @param createDateEnd     创建结束时间
      * @param page              页码
+     * @return 日志列表
      */
     String getLogList(String title,
                             String createDateStart,
@@ -29,22 +28,29 @@ public interface LogService {
     /**
      * 删除单条日志
      * @param id    日志id
+     * @return yes/no
      */
     String deleteLog(Integer id);
 
     /**
      * 批量删除日志信息
      * @param ids   字符串类型的id列表
+     * @param token  权限验证
+     * @return yes/no
      */
     String deleteLogs(String token, String ids);
 
     /**
      * 导出日志
+     * @param token 权限验证
+     * @param response 响应
      */
     void exportLog(String token, HttpServletResponse response);
 
     /**
      * 删除所有日志数据
+     * @param token 权限验证
+     * @return yes/no
      */
     String emptyLog(String token);
 

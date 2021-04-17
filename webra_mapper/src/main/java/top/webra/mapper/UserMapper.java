@@ -18,7 +18,17 @@ import java.util.List;
 @Mapper
 @Component
 public interface UserMapper extends BaseMapper<User> {
-
+    /**
+     * 用户列表查询
+     * @param id                id
+     * @param departmentIds     部门id列表
+     * @param username          用户名
+     * @param phone             手机
+     * @param state             状态
+     * @param createDateStart   开始
+     * @param createDateEnd     结束
+     * @return  用户列表
+     */
     List<User> getUserList(@Param("id") Integer id,
                        @Param("departmentIds") List<Integer> departmentIds,
                        @Param("username") String username,

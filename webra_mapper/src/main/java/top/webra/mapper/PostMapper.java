@@ -18,6 +18,12 @@ import java.util.List;
 @Mapper
 @Component
 public interface PostMapper  extends BaseMapper<Post> {
+    /**
+     * 岗位列表
+     * @param title     岗位名称
+     * @param state     岗位状态
+     * @return          岗位列表
+     */
     List<Post> getPostList(@Param("title") String title,
                            @Param("state") Integer state);
 

@@ -12,8 +12,6 @@
         <result property="createDate"   column="create_date"  />
         <result property="updateData"   column="update_date"  />
     </resultMap>
-
-
     <select id="getPostList" resultMap="postResult">
         select id,title,serial,`state`,remark,create_date
         from wra_post

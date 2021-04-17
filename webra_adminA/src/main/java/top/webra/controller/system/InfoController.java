@@ -3,7 +3,6 @@ package top.webra.controller.system;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import top.webra.bean.ResponseBean;
 import top.webra.service.impl.InfoServiceImpl;
 
 /**
@@ -45,12 +44,12 @@ public class InfoController {
         return infoService.setPassword(token,id,oldPassword,newPassword);
     }
 
-    // 修改头像
+    /** 修改头像 */
     @PostMapping("/avatar")
     public String uploadAvatar(@RequestHeader("token") String token, Integer id, String base64){
         return infoService.updateAvatar(token, id, base64);
     }
-    // 获取头像
+    /** 获取头像 */
     @GetMapping("/avatar")
     public String getAvatar(@RequestHeader("token") String token){
         return infoService.getAvatar(token);

@@ -22,10 +22,6 @@ import top.webra.service.impl.InformServiceImpl;
 @ResponseBody
 @RequestMapping("/system/site/inform")
 public class InformController {
-
-    @Autowired
-    private ResponseBean responseBean;
-
     @Autowired
     private InformServiceImpl informService;
 

@@ -37,7 +37,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         // 静态资源路径映射
         registry.addResourceHandler("/static/*").addResourceLocations("classpath:/static/");
 
-        // wagger 404 问题
+        // swagger 404 问题
         registry.addResourceHandler("/swagger-ui/*").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
         // js 无法访问
 //        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");

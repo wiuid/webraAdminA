@@ -38,7 +38,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     @Override
     public Map<String, String> getCpuInfo() {
         HardwareAbstractionLayer hal = new SystemInfo().getHardware();
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(4);
         CentralProcessor cpu = hal.getProcessor();
         map.put("logicalProcessor", CastUtil.toString(cpu.getLogicalProcessorCount()));
         map.put("kernel", CastUtil.toString(cpu.getPhysicalProcessorCount()));
@@ -59,7 +59,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     public Map<String, String> getMemoryInfo() {
         HardwareAbstractionLayer hal = new SystemInfo().getHardware();
         GlobalMemory memory = hal.getMemory();
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(4);
         String total = CastUtil.toString(memory.getTotal()/1024/1024);
         String available = CastUtil.toString(memory.getAvailable()/1024/1024);
         String current = CastUtil.toString(CastUtil.toLong(total)-memory.getAvailable()/1024/1024);
@@ -80,16 +80,8 @@ public class MonitoringServiceImpl implements MonitoringService {
     public Map<String, String> getDiskInfo() {
         HardwareAbstractionLayer hal = new SystemInfo().getHardware();
         List<HWDiskStore> diskStores = hal.getDiskStores();
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(1);
         map.put("partitions", JSON.toJSONString(diskStores));
-
-//        String os = System.getProperty("os.name");
-//        if (os.toLowerCase().startsWith("win")) {
-//            HWDiskStore hwDiskStore = diskStores.get(0);
-//            map.put("partitions", hwDiskStore.getPartitions().toString());
-//        }else {
-//            map.put("partitions", diskStores.toString());
-//        }
         return map;
     }
     /**
@@ -98,7 +90,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     @Override
     public Map<String, String> getSystemInfo() {
         OperatingSystem operatingSystem = new SystemInfo().getOperatingSystem();
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(5);
         map.put("system", operatingSystem.getFamily() + " - " + operatingSystem.getBitness());
         map.put("version", operatingSystem.getVersionInfo().toString());
         long systemUptime = operatingSystem.getSystemUptime();
@@ -126,7 +118,7 @@ public class MonitoringServiceImpl implements MonitoringService {
         RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
         MemoryMXBean memoryMxBean = ManagementFactory.getMemoryMXBean();
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>(4);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String format = simpleDateFormat.format(new Date(runtimeMxBean.getStartTime()));
         map.put("date",format);

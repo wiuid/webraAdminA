@@ -12,6 +12,6 @@ public class CompareUtil {
         return number == null;
     }
     public Boolean stringNull(String str) {
-        return str == null || str.equals("");
+        return str == null || "".equals(str);
     }
 }

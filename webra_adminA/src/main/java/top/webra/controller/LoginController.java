@@ -13,11 +13,4 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @ResponseBody
 public class LoginController {
-//    @RequestMapping("/login")
-//    public ResponseBean loginPage() {
-//        responseBean.setMsg("no login or login error");
-//        responseBean.setStatus(0);
-//        responseBean.setData(null);
-//        return responseBean;
-//    }
 }
