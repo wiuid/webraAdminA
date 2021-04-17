@@ -53,10 +53,10 @@ public class DepartmentServiceImpl implements DepartmentService {
             if (department != null) {
                 if (department.getWhether().equals(1)) {
                     getOneChildren(department);
-                    HashMap<String, Object> data = new HashMap<>();
+                    HashMap<String, Object> data = new HashMap<>(1);
                     ArrayList<Department> departments = new ArrayList<>();
                     departments.add(department);
-                    data.put("departmentList", JSON.toJSONString(departments));
+                    data.put("departmentList", departments);
                     return responseBean.buildOk(data);
                 }else {
                     // 这里返回空数据
