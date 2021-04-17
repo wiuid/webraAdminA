@@ -47,6 +47,7 @@ public class PostServiceImpl implements PostService {
     /**
      * 获取岗位列表
      */
+    @Override
     public String getPost(String title, Integer state, Integer page) {
         PageHelper.startPage(page, 10);
         List<Post> postList = postMapper.getPostList(title, state);
@@ -63,6 +64,7 @@ public class PostServiceImpl implements PostService {
      * 根据id 获取岗位数据
      * @param id 岗位id
      */
+    @Override
     public String getPostById(Integer id) {
         QueryWrapper<Post> postQueryWrapper = new QueryWrapper<Post>().select("id", "title", "serial", "state", "remark").eq("id", id).last("limit 1");
         Post post = postMapper.selectOne(postQueryWrapper);
@@ -72,6 +74,7 @@ public class PostServiceImpl implements PostService {
     }
 
     // 获取岗位 用于用户选择
+    @Override
     public String getPostTree() {
         List<Post> posts = postMapper.selectList(new QueryWrapper<Post>().select("id", "title"));
         HashMap<String, Object> data = new HashMap<>();
@@ -83,6 +86,7 @@ public class PostServiceImpl implements PostService {
      * 新增修改岗位接口
      * @param post 岗位对象
      */
+    @Override
     public String savePost(String token, Post post) {
         String username = JwtUtil.getUsername(token);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -132,6 +136,7 @@ public class PostServiceImpl implements PostService {
      * 更新岗位状态
      * @param id 岗位id
      */
+    @Override
     public String updatePostState(String token, Integer id) {
         Post post = postMapper.selectById(id);
         Integer state = post.getState()==1?0:1;
@@ -150,6 +155,7 @@ public class PostServiceImpl implements PostService {
      * 删除单个岗位
      * @param id 岗位id
      */
+    @Override
     public String deletePost(String token, Integer id) {
         int delete = postMapper.deleteById(id);
         String username = JwtUtil.getUsername(token);
@@ -166,6 +172,7 @@ public class PostServiceImpl implements PostService {
      * 批量删除岗位
      * @param ids 岗位ids列表字符串
      */
+    @Override
     public String deletePosts(String token, String ids) {
         String[] split = ids.split(",");
         ArrayList<Integer> integers = new ArrayList<>();

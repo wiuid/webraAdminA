@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
      * @param createDateEnd     创建结束范围
      * @param page              页码
      */
+    @Override
     public String getUserList(String token, Integer departmentId, String username, Integer phone, Integer state, String createDateStart, String createDateEnd, Integer page) {
         // 参数处理
         List<Integer> departmentIds = new ArrayList<>();
@@ -124,6 +125,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 根据id查询用户
+    @Override
     public String selectUser(Integer userId){
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<User>()
                 .select("id", "username", "nickname","department_id", "post_id", "role_id","phone", "email", "state", "remark")
@@ -142,6 +144,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 用于创建/修改部门时选择负责人
      */
+    @Override
     public String selectUserByNickname() {
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.select("id", "nickname");
@@ -151,6 +154,7 @@ public class UserServiceImpl implements UserService {
         return responseBean.buildOk(data);
     }
     // 删除用户
+    @Override
     public String deleteUser(String token, Integer id) {
         Claims claims = JwtUtil.getClaims(token);
         Integer userId = CastUtil.toInteger(claims.get("jti"));
@@ -174,6 +178,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 批量删除用户
+    @Override
     public String deleteUsers(String token, String ids) {
         String[] split = ids.split(",");
         ArrayList<Integer> integers = new ArrayList<>();
@@ -204,6 +209,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 新建/修改用户
+    @Override
     public String saveUser(String token, User user) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         Claims claims = JwtUtil.getClaims(token);
@@ -227,6 +233,7 @@ public class UserServiceImpl implements UserService {
         }
     }
     // 修改用户状态
+    @Override
     public String updateUserState(String token, Integer id) {
         Claims claims = JwtUtil.getClaims(token);
         Integer userId = CastUtil.toInteger(claims.get("jti"));
@@ -250,6 +257,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 修改用户密码（非自己的）
+    @Override
     public String updatePassword(String token, Integer id, String rootPassword, String newPassword) {
         Claims claims = JwtUtil.getClaims(token);
 

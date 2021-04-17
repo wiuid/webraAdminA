@@ -1,5 +1,6 @@
 package top.webra.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
@@ -46,6 +47,7 @@ public class InformServiceImpl implements InformService {
      * @param createDateStart   初始创建日期
      * @param createDateEnd     最后创建日期
      */
+    @Override
     public String selectInformList(String title, Integer state, Integer page, @Nullable Integer pageSize, String createDateStart, String createDateEnd){
         // 将时间从String转为Timestamp 如果String转换出错，就返回Null
 
@@ -72,8 +74,9 @@ public class InformServiceImpl implements InformService {
      * 根据id获取内容
      * @param informId 公告id
      */
+    @Override
     public String selectInform(Integer informId) {
-        Inform inform = informMapper.getInform(informId);
+        Inform inform = informMapper.selectOne(new QueryWrapper<Inform>().select("id", "title", "text", "state").eq("id", informId));
 
         if (inform == null){
             return responseBean.buildNoData();
@@ -89,6 +92,7 @@ public class InformServiceImpl implements InformService {
      * @param inform    公告id
      * @param token     token
      */
+    @Override
     public String saveInform(Inform inform, String token) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         // 首先根据公告id决定是修改还是添加数据，null代表新建/其他代表修改
@@ -131,6 +135,7 @@ public class InformServiceImpl implements InformService {
      * 删除单个公告
      * @param id 公告id
      */
+    @Override
     public String deleteInform(String token, Integer id) {
         int delete = informMapper.deleteById(id);
         String username = JwtUtil.getUsername(token);
@@ -147,6 +152,7 @@ public class InformServiceImpl implements InformService {
      * 批量删除公告
      * @param ids 公告ids列表字符串
      */
+    @Override
     public String deleteInforms(String token, String ids) {
         // 将字符串的id列表转换为Integer List
         String[] split = ids.split(",");
@@ -154,8 +160,6 @@ public class InformServiceImpl implements InformService {
         for (String s : split) {
             integers.add(CastUtil.toInteger(s));
         }
-//        QueryWrapper<Inform> informQueryWrapper = new QueryWrapper<Inform>();
-//        informQueryWrapper.in("id", integers);
         String username = JwtUtil.getUsername(token);
         int i = informMapper.deleteBatchIds(integers);
         if (i != 0){

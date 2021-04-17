@@ -49,6 +49,7 @@ public class InfoServiceImpl implements InfoService {
     private RoleMapper roleMapper;
 
     // 获取头像
+    @Override
     public String getAvatar(String token) {
         JwtUtil jwtUtil = new JwtUtil();
         Claims claims = jwtUtil.parseJWT(token);
@@ -62,6 +63,7 @@ public class InfoServiceImpl implements InfoService {
      * 获取个人信息页 的 数据
      * @param token 利用token 解析用户信息
      */
+    @Override
     public String getInfo(String token) {
         // 存储数据
         HashMap<String, Object> data = new HashMap<>();
@@ -91,6 +93,7 @@ public class InfoServiceImpl implements InfoService {
      * @param phone     手机号
      * @param email     邮箱
      */
+    @Override
     public String setInfo(String token, Integer id, String nickname, String phone, String email) {
         if (judge(token, id)){
             int update = userMapper.update(null, new UpdateWrapper<User>().eq("id", id).set("nickname", nickname).set("phone", phone).set("email", email).last("limit 1"));
@@ -111,6 +114,7 @@ public class InfoServiceImpl implements InfoService {
      * @param oldPassword       旧密码
      * @param newPassword       新密码
      */
+    @Override
     public String setPassword(String token, Integer id, String oldPassword, String newPassword) {
         if (judge(token, id)){
             User user = userMapper.selectOne(new QueryWrapper<User>().select("password").eq("id", id));
@@ -133,6 +137,7 @@ public class InfoServiceImpl implements InfoService {
     }
 
     // 上传头像
+    @Override
     public String updateAvatar(String token, Integer id, String base64) {
         if (judge(token, id)){
             try {
@@ -148,7 +153,7 @@ public class InfoServiceImpl implements InfoService {
                 String imgName;
                 // 这样默认头像将存在，自定义头像被覆盖（不太可能同一个时间点两个人新人账号同时更换头像- -造成相互覆盖吧，那样一旦有一个人再更新头像，另一个人头像直接也就改了）
                 String avatar = user.getAvatar();
-                if (avatar.equals("/touxiang.gif")){
+                if ("/touxiang.gif".equals(avatar)){
                     imgName = System.currentTimeMillis()+".jpg";
                 }else {
                     imgName = avatar.replaceFirst("/api/image/","");

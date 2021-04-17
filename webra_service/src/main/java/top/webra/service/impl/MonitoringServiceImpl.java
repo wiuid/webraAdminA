@@ -35,6 +35,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     /**
      * map 中的内容分别是：逻辑处理器数、核心数、使用率、空闲率
      */
+    @Override
     public Map<String, String> getCpuInfo() {
         HardwareAbstractionLayer hal = new SystemInfo().getHardware();
         HashMap<String, String> map = new HashMap<>();
@@ -54,6 +55,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     /**
      * map 中的内容分别是：内存大小、已用内存大小、可用内存大小、使用率
      */
+    @Override
     public Map<String, String> getMemoryInfo() {
         HardwareAbstractionLayer hal = new SystemInfo().getHardware();
         GlobalMemory memory = hal.getMemory();
@@ -74,6 +76,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     /**
      * map 中的内容分别是：磁盘信息
      */
+    @Override
     public Map<String, String> getDiskInfo() {
         HardwareAbstractionLayer hal = new SystemInfo().getHardware();
         List<HWDiskStore> diskStores = hal.getDiskStores();
@@ -92,6 +95,7 @@ public class MonitoringServiceImpl implements MonitoringService {
     /**
      * map 中的内容分别是：系统名、版本、运行时长、ip、系统名
      */
+    @Override
     public Map<String, String> getSystemInfo() {
         OperatingSystem operatingSystem = new SystemInfo().getOperatingSystem();
         HashMap<String, String> map = new HashMap<>();
@@ -116,6 +120,7 @@ public class MonitoringServiceImpl implements MonitoringService {
         return map;
     }
 
+    @Override
     public Map<String, String> getJvmInfo() {
 
         RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();

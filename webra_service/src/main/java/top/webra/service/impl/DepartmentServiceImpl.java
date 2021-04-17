@@ -38,6 +38,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 获取全部部门信息
      */
+    @Override
     public String getDepartmentList(String token) {
         Claims claims = JwtUtil.getClaims(token);
         String authIds = claims.get("roles").toString();
@@ -87,6 +88,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * 获取部门信息，主要包含id、title
      */
+    @Override
     public String getDepartmentIdTitle() {
         QueryWrapper<Department> departmentQueryWrapper = new QueryWrapper<Department>()
                 .select("id", "title", "super_id", "whether")
@@ -99,6 +101,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 根据id 查询部门数据
      * @param departmentId 部门id
      */
+    @Override
     public String getDepartment(Integer departmentId) {
         Department department = departmentMapper.selectById(departmentId);
         Integer superId = department.getSuperId();
@@ -112,6 +115,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 新建/修改部门数据
      * @param department 部门对象
      */
+    @Override
     public String saveDepartment(String token, Department department) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String username = JwtUtil.getUsername(token);
@@ -183,6 +187,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @param token     token
      * @param id        部门id
      */
+    @Override
     public String updateDepartmentState(String token, Integer id){
         Department department = departmentMapper.selectById(id);
         Integer state = department.getState().equals(1)?0:1;
@@ -252,6 +257,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 根据id 删除部门
      * @param id    部门id
      */
+    @Override
     public String deleteDepartment(String token, Integer id) {
         Department department = departmentMapper.selectById(id);
         if (department.getWhether().equals(1)) {

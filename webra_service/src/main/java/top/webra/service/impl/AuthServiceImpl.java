@@ -35,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
      * 获取动态路由
      * @param token     token
      */
+    @Override
     public Map<String, Object> getUserAside(String token) {
         // 解析权限
         JwtUtil jwtUtil = new JwtUtil();
@@ -77,6 +78,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 获得选择树，用于角色选择对应的权限
      */
+    @Override
     public String getTree() {
         // 寄存嵌套后的数据
         ArrayList<Auth> auths = new ArrayList<>();

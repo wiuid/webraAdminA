@@ -57,6 +57,7 @@ public class RoleServiceImpl implements RoleService{
      * @param createDateEnd     创建结束时间
      * @param page              页码
      */
+    @Override
     public String getRoleList(String title, String code, Integer state, String createDateStart, String createDateEnd, Integer page) {
         // 判断搜索条件是否存在，存在的话 需要进行格式化 才可以存放数据库
         if (!"".equals(createDateStart) && createDateStart != null){
@@ -82,6 +83,7 @@ public class RoleServiceImpl implements RoleService{
      * 根据id 获取角色信息
      * @param id    角色id
      */
+    @Override
     public String getRole(Integer id) {
         Role role = roleMapper.selectById(id);
 
@@ -98,6 +100,7 @@ public class RoleServiceImpl implements RoleService{
      * 角色新建/修改处理
      * @param role  角色对象
      */
+    @Override
     public String saveRole(String token, Role role) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         role.setUpdateDate(timestamp);
@@ -144,6 +147,7 @@ public class RoleServiceImpl implements RoleService{
      * 根据id 修改状态
      * @param id    角色id
      */
+    @Override
     public String updateRoleSwitch(String token, Integer id){
         Role role = roleMapper.selectById(id);
         Integer state = role.getState()==1?0:1;
@@ -162,6 +166,7 @@ public class RoleServiceImpl implements RoleService{
      * 删除单个角色
      * @param id    角色id
      */
+    @Override
     public String deleteRole(String token, Integer id) {
         List<User> users = userMapper.selectList(new QueryWrapper<User>().select("id").eq("role_id", id));
         // 将拥有该角色的用户修改角色为默认值2 普通用户
@@ -182,6 +187,7 @@ public class RoleServiceImpl implements RoleService{
      * 批量删除角色
      * @param ids    角色ids列表字符串
      */
+    @Override
     public String deleteRoles(String token, String ids) {
         String[] split = ids.split(",");
         ArrayList<Integer> integers = new ArrayList<>();
@@ -219,6 +225,7 @@ public class RoleServiceImpl implements RoleService{
     /**
      * 角色列表，用以 选择
      */
+    @Override
     public String getRoleTree() {
         List<Role> roles = roleMapper.selectList(new QueryWrapper<Role>().select("id", "title"));
         HashMap<String, Object> data = new HashMap<>();
@@ -230,8 +237,6 @@ public class RoleServiceImpl implements RoleService{
     public void exportRoles(HttpServletResponse response) {
         try {
             InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("classpath:static/excel/templateExportRole.xls");
-//            File excel = ResourceUtils.getFile("classpath:static/excel/templateExportRole.xls");
-//            FileInputStream fileInputStream = new FileInputStream(excel);
             List<Role> roles = roleMapper.selectList(new QueryWrapper<>());
             // 根据模板创建一个工作簿
             HSSFWorkbook workbook = new HSSFWorkbook(resourceAsStream);
