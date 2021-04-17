@@ -56,8 +56,7 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         roleQueryWrapper.eq("id", user.getRoleId());
         Role role = roleMapper.selectOne(roleQueryWrapper);
 
-        JwtUtil jwtUtil = new JwtUtil();
-        String token = jwtUtil.createJWT(CastUtil.toString(user.getId()), user.getUsername(), role.getAuthIds());
+        String token = JwtUtil.createJWT(CastUtil.toString(user.getId()), user.getUsername(), role.getAuthIds());
         // 权限列表
         Map<String, Object> data = authService.getUserAside(token);
         // token

@@ -5,8 +5,11 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.webra.bean.Jwt;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,34 +20,17 @@ import java.util.stream.Collectors;
 @Component
 //@ConfigurationProperties("jwt.config")
 public class JwtUtil {
+    @Autowired
+    private Jwt jwt;
+    private static Jwt customJwt;
 
-    private String key = "glWT4H&aPinuzJQKGtUkv@76lkewebra";
-
-    private long ttl = 3600000; // 3600000毫秒，1小时
-
-    public static void getClaims() {
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public long getTtl() {
-        return ttl;
-    }
-
-    public void setTtl(long ttl) {
-        this.ttl = ttl;
+    @PostConstruct
+    public void init(){
+        customJwt = jwt;
     }
 
     /**
      * 生成JWT
-     *
-     *
      * JWT分成3部分：1.头部（header),2.载荷（payload, 类似于飞机上承载的物品)，3.签证（signature)
      *
      * 加密后这3部分密文的字符位数为：
@@ -57,29 +43,28 @@ public class JwtUtil {
      * @param subject   用户名
      * @param roles     用户权限
      */
-    public String createJWT(String id, String subject, String roles) {
+    public static String createJWT(String id, String subject, String roles) {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         // 组合header
         Map<String, Object> map = new HashMap<>();
         map.put("alg", "HS256");
         map.put("typ", "JWT");
-       /* //创建payload的私有声明（根据特定的业务需要添加，如果要拿这个做验证，一般是需要和jwt的接收方提前沟通好验证方式的）
-        Map<String, Object> claims = new HashMap<String, Object>();
-        claims.put("id", user.getId());
-        claims.put("username", user.getUsername());
-        claims.put("password", user.getPassword());*/
         JwtBuilder builder = Jwts.builder()
                 .setHeaderParams(map)
 //                如果有私有声明，一定要先设置这个自己创建的私有的声明，这个是给builder的claim赋值，一旦写在标准的声明赋值之后，就是覆盖了那些标准的声明的
 //                .setClaims(claims)
-                .setId(id)//设置id
-                .setSubject(subject)//设置用户名
-                .setIssuedAt(now)//设置jwt的签发时间
-                .signWith(SignatureAlgorithm.HS256, key)//设置签名使用的签名算法和签名使用的秘钥
+                //设置id
+                .setId(id)
+                //设置用户名
+                .setSubject(subject)
+                //设置jwt的签发时间
+                .setIssuedAt(now)
+                //设置签名使用的签名算法和签名使用的秘钥
+                .signWith(SignatureAlgorithm.HS256, customJwt.getKey())
                 .claim("roles", roles);
-        if (ttl > 0) {
-            builder.setExpiration( new Date( nowMillis + ttl));
+        if (customJwt.getTtl() > 0) {
+            builder.setExpiration( new Date( nowMillis + customJwt.getTtl()));
         }
         return builder.compact();
     }
@@ -90,16 +75,15 @@ public class JwtUtil {
      * {jti=1, sub=admin, iat=1615637863, roles=1,2,3,4,5,6,7,8,9,10,11,12,13,14,, exp=1615641463}
      * @param jwtStr    token
      */
-    public Claims parseJWT(String jwtStr){
+    public static Claims parseJWT(String jwtStr){
         return  Jwts.parser()
-                .setSigningKey(key)
+                .setSigningKey(customJwt.getKey())
                 .parseClaimsJws(jwtStr)
                 .getBody();
     }
 
     public static Claims getClaims(String token){
-        JwtUtil jwtUtil = new JwtUtil();
-        return jwtUtil.parseJWT(token);
+        return JwtUtil.parseJWT(token);
     }
 
     // 解析token 获取 用户id

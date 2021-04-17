@@ -15,8 +15,6 @@ spring:
       name: root
       password: 123qwe
 
-#  resources:
-#    static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
 # mybatis 配置
 mybatis-plus:
   type-aliases-package: top.webra.pojo
@@ -32,8 +30,8 @@ file-path:
   win: E:\images\imageService\
   lin: /usr/image/
 
-#jwt:
-#  config:
-#    key: glWT4H&aPinuzJQKGtUkv@76lkewebra
-#    # 10800000毫秒，3小时
-#    timeout: 10800000
+jwt:
+  config:
+    key: glWT4H&aPinuzJQKGtUkv@76lkewebra
+    # 10800000毫秒，3小时
+    ttl: 3600000
