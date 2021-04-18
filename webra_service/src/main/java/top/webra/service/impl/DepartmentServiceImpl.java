@@ -13,6 +13,7 @@ import top.webra.pojo.Department;
 import top.webra.pojo.User;
 import top.webra.service.DepartmentService;
 import top.webra.util.JwtUtil;
+import top.webra.utils.RedisUtil;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -35,6 +36,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     private LogServiceImpl logService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     /**
      * 获取全部部门信息
      */
@@ -44,8 +48,13 @@ public class DepartmentServiceImpl implements DepartmentService {
         String authIds = claims.get("roles").toString();
         if (authIds.contains("15")) {
             // 管理全部部门
-            QueryWrapper<Department> departmentQueryWrapper = new QueryWrapper<Department>().orderByAsc("super_id");
-            return formatDepartments(departmentQueryWrapper);
+            String key = "departmentList";
+            if (redisUtil.hasKey(key)){
+                return redisUtil.get(key).toString();
+            }else {
+                QueryWrapper<Department> departmentQueryWrapper = new QueryWrapper<Department>().orderByAsc("super_id");
+                return formatDepartments(departmentQueryWrapper, key);
+            }
         }else if (authIds.contains("16")){
             // 仅管理自己是负责人的部门，用户必须是负责人的情况下！
             Integer userId = Integer.valueOf(claims.get("jti").toString());
@@ -90,11 +99,16 @@ public class DepartmentServiceImpl implements DepartmentService {
      */
     @Override
     public String getDepartmentIdTitle() {
-        QueryWrapper<Department> departmentQueryWrapper = new QueryWrapper<Department>()
-                .select("id", "title", "super_id", "whether")
-                .eq("state", 0)
-                .orderByAsc("super_id");
-        return formatDepartments(departmentQueryWrapper);
+        String key = "liteDepartmentList";
+        if (redisUtil.hasKey(key)){
+            return redisUtil.get(key).toString();
+        }else {
+            QueryWrapper<Department> departmentQueryWrapper = new QueryWrapper<Department>()
+                    .select("id", "title", "super_id", "whether")
+                    .eq("state", 0)
+                    .orderByAsc("super_id");
+            return formatDepartments(departmentQueryWrapper, key);
+        }
     }
 
     /**
@@ -290,7 +304,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * 根据条件返回多级部门列表
      * @param departmentQueryWrapper    查询条件
      */
-    private String formatDepartments(QueryWrapper<Department> departmentQueryWrapper){
+    private String formatDepartments(QueryWrapper<Department> departmentQueryWrapper, String key){
         // 查询的部门数据
         List<Department> departments = departmentMapper.selectList(departmentQueryWrapper);
         // 该mao用来承载数据，返回前端
@@ -314,7 +328,9 @@ public class DepartmentServiceImpl implements DepartmentService {
                 }
                 map.put("departmentList", JSON.toJSONString(getChild(list, departments)));
             }
-            return responseBean.buildOk(map);
+            String res = responseBean.buildOk(map);
+            redisUtil.set(key, res);
+            return res;
         }else {
             return responseBean.buildNoData();
         }
