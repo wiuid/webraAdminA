@@ -15,6 +15,24 @@ spring:
       name: root
       password: 123qwe
 
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    jedis:
+      pool:
+        # 连接池最大连接数
+        max-active: 10
+        # 最大空闲
+        max-idle: 5
+        # 最大阻塞时间
+        max-wait: 5000
+        # 最小空闲
+        min-idle: 1
+    # 超时
+    timeout: 10000
+
 # mybatis 配置
 mybatis-plus:
   type-aliases-package: top.webra.pojo

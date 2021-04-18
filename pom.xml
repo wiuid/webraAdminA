@@ -14,6 +14,7 @@
         <module>webra_mapper</module>
         <module>webra_security</module>
         <module>webra_util</module>
+        <module>webra_redis</module>
     </modules>
 
     <properties>
