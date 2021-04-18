@@ -124,6 +124,7 @@ public class RoleServiceImpl implements RoleService{
     private String insertRole(String username, Role role){
         int insert = roleMapper.insert(role);
         if (insert == 1){
+            redisUtil.del("roleSelect");
             logService.createLog("新建角色", username,"新建角色:"+ role.getTitle() + ",新建成功");
             return responseBean.buildOkMsg("新增角色成功");
         }else {
@@ -139,6 +140,7 @@ public class RoleServiceImpl implements RoleService{
     private String updateRole(String username, Role role){
         int update = roleMapper.updateById(role);
         if (update == 1){
+            redisUtil.del("roleSelect");
             logService.createLog("修改角色", username,"修改角色:"+ role.getTitle() + ",修改成功");
             return responseBean.buildOkMsg("修改角色成功");
         }else {
