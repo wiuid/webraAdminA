@@ -14,6 +14,7 @@ import top.webra.mapper.PostMapper;
 import top.webra.pojo.Post;
 import top.webra.service.PostService;
 import top.webra.util.JwtUtil;
+import top.webra.utils.RedisUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,8 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private LogServiceImpl logService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 获取岗位列表
@@ -78,10 +81,17 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     public String getPostTree() {
-        List<Post> posts = postMapper.selectList(new QueryWrapper<Post>().select("id", "title"));
-        HashMap<String, Object> data = new HashMap<>(1);
-        data.put("postList", posts);
-        return responseBean.buildOk(data);
+        String key = "postSelect";
+        if (redisUtil.hasKey(key)){
+            return redisUtil.get(key).toString();
+        }else {
+            List<Post> posts = postMapper.selectList(new QueryWrapper<Post>().select("id", "title"));
+            HashMap<String, Object> data = new HashMap<>(1);
+            data.put("postList", posts);
+            String res = responseBean.buildOk(data);
+            redisUtil.set("postSelect", res, 3600000L);
+            return res;
+        }
     }
 
     /**
@@ -109,6 +119,7 @@ public class PostServiceImpl implements PostService {
         post.setUpdateDate(timestamp);
         int insert = postMapper.insert(post);
         if (insert == 1){
+            redisUtil.del("postSelect");
             logService.createLog("新建岗位", username,"新建岗位:"+ post.getTitle() + ",新建成功");
             return responseBean.buildOkMsg("新增岗位成功");
         }else {
@@ -125,6 +136,7 @@ public class PostServiceImpl implements PostService {
         post.setUpdateDate(timestamp);
         int update = postMapper.updateById(post);
         if (update == 1){
+            redisUtil.del("postSelect");
             logService.createLog("修改岗位", username,"修改岗位:"+ post.getTitle() + ",修改成功");
             return responseBean.buildOkMsg("修改岗位成功");
         }else {
@@ -145,6 +157,7 @@ public class PostServiceImpl implements PostService {
         String username = JwtUtil.getUsername(token);
         int update = postMapper.update(null, new UpdateWrapper<Post>().eq("id", id).set("state", state).last("limit 1"));
         if (update ==1){
+            redisUtil.del("postSelect");
             logService.createLog("修改岗位状态", username,"修改岗位状态:"+ post.getTitle() + ",修改成功");
             return responseBean.buildOkMsg("修改状态成功");
         }else {
@@ -162,6 +175,7 @@ public class PostServiceImpl implements PostService {
         int delete = postMapper.deleteById(id);
         String username = JwtUtil.getUsername(token);
         if (delete == 1){
+            redisUtil.del("postSelect");
             logService.createLog("删除岗位", username,"删除成功");
             return responseBean.buildOkMsg("删除岗位成功");
         }else {
@@ -187,6 +201,7 @@ public class PostServiceImpl implements PostService {
             logService.createLog("删除岗位", username,"批量删除失败,数据库可能存在异常");
             return responseBean.buildNoDataMsg("数据异常");
         }else {
+            redisUtil.del("postSelect");
             logService.createLog("删除岗位", username,"批量删除成功");
             return responseBean.buildOkMsg("批量删除岗位成功");
         }
