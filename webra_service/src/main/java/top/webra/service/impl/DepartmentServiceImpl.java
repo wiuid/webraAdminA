@@ -188,6 +188,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     departmentMapper.update(null, departmentUpdateWrapper);
                 }
             }
+            redisUtil.del("liteDepartmentList", "departmentList");
             logService.createLog("修改部门", username, "修改部门:"+ department.getTitle() + ",修改成功");
             return responseBean.buildOkMsg("修改部门成功");
         }else {
@@ -228,6 +229,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     // 将部门负责人重置
                     departmentMapper.update(null, new UpdateWrapper<Department>().in("id", childrenIds).set("user_id", null).last("limit " + childrenIds.size()));
                 }
+                redisUtil.del("liteDepartmentList", "departmentList");
                 return responseBean.buildOkMsg("状态修改成功");
             }
         }else {
@@ -236,6 +238,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     .set("state", state)
                     .last("limit 1");
             departmentMapper.update(null, departmentUpdateWrapper);
+            redisUtil.del("liteDepartmentList", "departmentList");
             return responseBean.buildOkMsg("状态修改成功");
         }
     }
@@ -259,6 +262,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                     departmentMapper.updateById(superDepartment);
                 }
             }
+            redisUtil.del("liteDepartmentList", "departmentList");
             logService.createLog("新建部门", username,"新建部门:"+ department.getTitle() + ",新建成功");
             return responseBean.buildOkMsg("新增部门成功");
         }else {
@@ -282,6 +286,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             departmentMapper.deleteById(id);
         }
         String username = JwtUtil.getUsername(token);
+        redisUtil.del("liteDepartmentList", "departmentList");
         logService.createLog("删除部门", username,"删除部门:"+ department.getTitle() + ",删除成功");
         return responseBean.buildOkMsg(department.getTitle() + " 部门及下级部门删除成功");
     }
