@@ -334,7 +334,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 map.put("departmentList", JSON.toJSONString(getChild(list, departments)));
             }
             String res = responseBean.buildOk(map);
-            redisUtil.set(key, res);
+            redisUtil.set(key, res, 3600000L);
             return res;
         }else {
             return responseBean.buildNoData();
