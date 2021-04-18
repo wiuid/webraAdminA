@@ -19,6 +19,7 @@ import top.webra.service.UserService;
 import top.webra.util.CastUtil;
 import top.webra.util.JwtUtil;
 import top.webra.util.MD5Util;
+import top.webra.utils.RedisUtil;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private LogServiceImpl logService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      *
@@ -150,12 +153,19 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String selectUserByNickname() {
-        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.select("id", "nickname");
-        List<User> users = userMapper.selectList(userQueryWrapper);
-        HashMap<String, Object> data = new HashMap<>(1);
-        data.put("userList", JSON.toJSONString(users));
-        return responseBean.buildOk(data);
+        String key = "userSelect";
+        if (redisUtil.hasKey(key)){
+            return redisUtil.get(key).toString();
+        }else {
+            QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+            userQueryWrapper.select("id", "nickname");
+            List<User> users = userMapper.selectList(userQueryWrapper);
+            HashMap<String, Object> data = new HashMap<>(1);
+            data.put("userList", JSON.toJSONString(users));
+            String res = responseBean.buildOk(data);
+            redisUtil.set(key, res, 3600000L);
+            return res;
+        }
     }
     /**
      * 删除用户
@@ -171,12 +181,12 @@ public class UserServiceImpl implements UserService {
 
         // 删除的用户不可是自身和超管
         if (id.equals(userId) || id == 1){
-
             logService.createLog("删除用户", username,"违规操作");
             return responseBean.buildError("违规操作");
         }
         int delete = userMapper.deleteById(id);
         if (delete == 1){
+            redisUtil.del("userSelect");
             informMapper.update(null, new UpdateWrapper<Inform>().eq("user_id", id).set("user_id", 1));
             logService.createLog("删除用户", username,"删除成功");
             return responseBean.buildOkMsg("删除用户成功");
@@ -211,6 +221,7 @@ public class UserServiceImpl implements UserService {
             logService.createLog("删除用户", username,"批量删除失败,数据库可能存在异常");
             return responseBean.buildNoDataMsg("数据异常");
         }else {
+            redisUtil.del("userSelect");
             informMapper.update(null, new UpdateWrapper<Inform>().in("user_id", integers).set("user_id", 1));
             logService.createLog("删除用户", username,"批量删除成功");
             return responseBean.buildOkMsg("批量删除用户成功");
@@ -299,6 +310,7 @@ public class UserServiceImpl implements UserService {
     private String insertUser(String username, User user) {
         int insert = userMapper.insert(user);
         if (insert == 1){
+            redisUtil.del("userSelect");
             logService.createLog("新建用户", username,"新建用户:"+ user.getUsername() + ",新建成功");
             return responseBean.buildOkMsg("新增用户成功");
         }else {
@@ -316,6 +328,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(oldUser.getPassword());
         int i = userMapper.updateById(user);
         if (i == 1){
+            redisUtil.del("userSelect");
             logService.createLog("修改用户", username,"修改用户:"+ user.getUsername() + ",修改成功");
             return responseBean.buildOkMsg("修改用户成功");
         } else {
