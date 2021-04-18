@@ -83,18 +83,18 @@ public class InformServiceImpl implements InformService {
         if (redisUtil.get(key).toString().equals(informId.toString())) {
             return redisUtil.get("inform").toString();
         }else {
-            Inform inform = informMapper.selectOne(new QueryWrapper<Inform>().select("id", "title", "text", "state").eq("id", informId));
+            return getInformById(informId);
+        }
+    }
 
-            if (inform == null){
-                return responseBean.buildNoData();
-            }else {
-                HashMap<String, Object> data = new HashMap<>(1);
-                data.put("inform", inform);
-                String res = responseBean.buildOk(data);
-                redisUtil.set("newInform", informId);
-                redisUtil.set("inform", res);
-                return res;
-            }
+    private String getInformById(Integer informId){
+        Inform inform = informMapper.selectOne(new QueryWrapper<Inform>().select("id", "title", "text", "state").eq("id", informId));
+        if (inform == null){
+            return responseBean.buildNoData();
+        }else {
+            HashMap<String, Object> data = new HashMap<>(1);
+            data.put("inform", inform);
+            return responseBean.buildOk(data);
         }
     }
 
@@ -121,7 +121,8 @@ public class InformServiceImpl implements InformService {
             int insert = informMapper.insert(inform);
             // 返回信息
             if (insert == 1){
-                redisUtil.set("newInform", 0);
+                redisUtil.set("newInform", inform.getId().toString());
+                redisUtil.set("inform", getInformById(inform.getId()));
                 logService.createLog("新建公告", username,"新建公告:"+ inform.getTitle() + ",新建成功");
                 return responseBean.buildOkMsg("新增公告成功");
             }else {
@@ -136,7 +137,7 @@ public class InformServiceImpl implements InformService {
             if (update == 1){
                 String key = "newInform";
                 if (redisUtil.get(key).toString().equals(inform.getId().toString())){
-                    redisUtil.set(key, 0);
+                    redisUtil.set("inform", getInformById(inform.getId()));
                 }
                 logService.createLog("修改公告", username, "修改公告:"+ inform.getTitle() + ",修改成功");
                 return responseBean.buildOkMsg("修改公告成功");
@@ -158,7 +159,7 @@ public class InformServiceImpl implements InformService {
         if (delete == 1){
             String key = "newInform";
             if (redisUtil.get(key).toString().equals(id.toString())){
-                redisUtil.set(key, 0);
+                redisUtil.set(key, "0");
             }
             logService.createLog("删除公告", username,"删除成功");
             return responseBean.buildOkMsg("删除公告成功");
@@ -183,7 +184,7 @@ public class InformServiceImpl implements InformService {
         String username = JwtUtil.getUsername(token);
         int i = informMapper.deleteBatchIds(integers);
         if (i != 0){
-            redisUtil.set("newInform", 0);
+            redisUtil.set("newInform", "0");
             logService.createLog("删除公告", username,"批量删除成功");
             return responseBean.buildOkMsg("批量删除公告成功");
         }else{
