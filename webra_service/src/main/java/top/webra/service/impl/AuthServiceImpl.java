@@ -9,6 +9,7 @@ import top.webra.mapper.AuthMapper;
 import top.webra.pojo.Auth;
 import top.webra.service.AuthService;
 import top.webra.util.JwtUtil;
+import top.webra.utils.RedisUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private ResponseBean responseBean;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 获取动态路由
@@ -79,24 +83,30 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public String getTree() {
-        // 寄存嵌套后的数据
-        ArrayList<Auth> auths = new ArrayList<>();
-        // 查询的源数据
-        List<Auth> authList = authMapper.selectList(new QueryWrapper<Auth>().select("id", "title", "super_id", "whether").orderByAsc("id"));
-        // 将父节点都取出来
-        for (Auth auth : authList) {
-            if (auth.getSuperId().equals(0)) {
-                auths.add(auth);
-            }else{
-                break;
+        if (redisUtil.hasKey("authTree")){
+            return redisUtil.get("authTree").toString();
+        }else {
+            // 寄存嵌套后的数据
+            ArrayList<Auth> auths = new ArrayList<>();
+            // 查询的源数据
+            List<Auth> authList = authMapper.selectList(new QueryWrapper<Auth>().select("id", "title", "super_id", "whether").orderByAsc("id"));
+            // 将父节点都取出来
+            for (Auth auth : authList) {
+                if (auth.getSuperId().equals(0)) {
+                    auths.add(auth);
+                }else{
+                    break;
+                }
             }
-        }
-        // 嵌套数据
-        getChildren(auths, authList);
+            // 嵌套数据
+            getChildren(auths, authList);
 
-        HashMap<String, Object> data = new HashMap<>(1);
-        data.put("authTree", auths);
-        return responseBean.buildOk(data);
+            HashMap<String, Object> data = new HashMap<>(1);
+            data.put("authTree", auths);
+            String authTree = responseBean.buildOk(data);
+            redisUtil.set("authTree", authTree, 180000L);
+            return authTree;
+        }
     }
 
     /**
