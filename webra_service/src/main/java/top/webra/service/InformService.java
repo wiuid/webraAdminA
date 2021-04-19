@@ -35,8 +35,8 @@ public interface InformService {
 
     /**
      * 首页任何人可查
-     * @param informId
-     * @return
+     * @param informId  公告id
+     * @return  公告信息
      */
     String getInform(Integer informId);
 
