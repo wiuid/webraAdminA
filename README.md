@@ -24,6 +24,19 @@
 - 公告管理
 - 等等
 
+### 部署
+
+- 确保mysql、redis运行正常，java环境正常
+- 在jar所在目录将`application.yml`放进去，更改其中的mysql、端口、redis、token相关信息
+- 执行以下命令中的任意一个
+- - 两者命令就是是否将jar响应的信息存储为日志文件进行保存
+```text
+java -jar xxx.jar &
+Java -jar xxx.jar > access.log &
+```
+- 执行 `exit` 退出操作系统，不这样的话，jar会结束运行
+
+
 ![home.png](ReadImages/home.png)
 
 ![inform.png](ReadImages/inform.png)
@@ -33,6 +46,8 @@
 ![monitoring.png](ReadImages/monitoring.png)
 
 ![auth.png](ReadImages/auth.png)
+
+
 
 
 
