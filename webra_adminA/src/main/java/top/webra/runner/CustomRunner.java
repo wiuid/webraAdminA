@@ -1,9 +1,11 @@
 package top.webra.runner;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import top.webra.utils.RedisUtil;
 
 import java.io.File;
 
@@ -20,9 +22,10 @@ public class CustomRunner implements ApplicationRunner {
     private String winPath;
     @Value("${file-path.lin}")
     private String linPath;
-
+    @Autowired
+    private RedisUtil redisUtil;
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         // 判断当前系统是否是Windows，并赋值路径
         String path = System.getProperty("os.name").toLowerCase().startsWith("win")?winPath:linPath;
         File file = new File(path);
@@ -30,5 +33,7 @@ public class CustomRunner implements ApplicationRunner {
         if (!file.exists()){
             file.mkdirs();
         }
+        // redis中一定要存在key = newInform的值
+        redisUtil.set("newInform", "0");
     }
 }
