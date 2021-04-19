@@ -34,6 +34,13 @@ public interface InformService {
     String selectInform(Integer informId);
 
     /**
+     * 首页任何人可查
+     * @param informId
+     * @return
+     */
+    String getInform(Integer informId);
+
+    /**
      * 新建公告或修改某公告，以token决定公告修改的人
      * @param inform        公告对象
      * @param token         解析

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import top.webra.bean.ResponseBean;
 import top.webra.pojo.Inform;
 import top.webra.service.impl.InformServiceImpl;
 
@@ -37,12 +36,23 @@ public class InformController {
     /**
      * 根据id 获取详细信息
      * @param id 公告id
+     * @return  公告信息
      */
+    @PreAuthorize("hasRole('ROLE_inform')")
     @GetMapping("/get")
     public String getInform(Integer id){
         return informService.selectInform(id);
     }
 
+    /**
+     * 来自首页的查询公告请求
+     * @param id    公告id
+     * @return  公告信息
+     */
+    @GetMapping("hget")
+    public String getInformByHome(Integer id){
+        return informService.getInform(id);
+    }
     /**
      * 所需参数：公告对象
      * 同时处理新增、修改公告对象，区别点在公告id

@@ -34,6 +34,8 @@
         from `wra_inform`
         left join `wra_user` u on u.id = `wra_inform`.user_id
         where wra_inform.id = #{id}
+        AND wra_inform.state != 1
+        limit 1
     </select>
 
 

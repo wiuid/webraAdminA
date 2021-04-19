@@ -79,16 +79,31 @@ public class InformServiceImpl implements InformService {
      */
     @Override
     public String selectInform(Integer informId) {
+
+        Inform inform = informMapper.selectOne(new QueryWrapper<Inform>().select("id", "title", "text", "state").eq("id", informId));
+        return informJudge(inform);
+
+
+    }
+
+    /**
+     * 首页查询公告
+     * @param informId 公告id
+     * @return  公告信息
+     */
+    @Override
+    public String getInform(Integer informId) {
+
         String key = "newInform";
         if (redisUtil.get(key).toString().equals(informId.toString())) {
             return redisUtil.get("inform").toString();
         }else {
-            return getInformById(informId);
+            Inform inform = informMapper.getInform(informId);
+            return informJudge(inform);
         }
     }
 
-    private String getInformById(Integer informId){
-        Inform inform = informMapper.selectOne(new QueryWrapper<Inform>().select("id", "title", "text", "state").eq("id", informId));
+    private String informJudge(Inform inform){
         if (inform == null){
             return responseBean.buildNoData();
         }else {
@@ -113,38 +128,72 @@ public class InformServiceImpl implements InformService {
         String username = claims.get("sub").toString();
 
         if (inform.getId() == 0){
-            // 新增公告
-            // 从token中获取用户id赋值给inform 公告
-            inform.setUserId(CastUtil.toInteger(claims.get("jti")));
-            // 插入数据库
-            inform.setCreateDate(timestamp);
-            int insert = informMapper.insert(inform);
-            // 返回信息
-            if (insert == 1){
-                redisUtil.set("newInform", inform.getId().toString());
-                redisUtil.set("inform", getInformById(inform.getId()));
-                logService.createLog("新建公告", username,"新建公告:"+ inform.getTitle() + ",新建成功");
-                return responseBean.buildOkMsg("新增公告成功");
-            }else {
-                logService.createLog("新建公告", username,"新建公告:"+ inform.getTitle() + ",新建失败,数据库可能存在异常");
-                return responseBean.buildNoDataMsg("数据异常");
-            }
+            return insertInform(inform, claims, timestamp, username);
         } else {
-            // 修改某公告
-            // 修改数据
-            int update = informMapper.updateById(inform);
-            // 返回信息
-            if (update == 1){
-                String key = "newInform";
-                if (redisUtil.get(key).toString().equals(inform.getId().toString())){
-                    redisUtil.set("inform", getInformById(inform.getId()));
-                }
-                logService.createLog("修改公告", username, "修改公告:"+ inform.getTitle() + ",修改成功");
-                return responseBean.buildOkMsg("修改公告成功");
-            }else {
-                logService.createLog("修改公告", username,"修改公告:"+ inform.getTitle() + ",修改失败,数据库可能存在异常");
-                return responseBean.buildNoDataMsg("数据异常");
+            return updateInform(inform, username);
+        }
+    }
+
+    /**
+     * 将新插入/修改的 最新公告添加到redis
+     * @param informId 公告id
+     */
+    private void newInformToRedis(Integer informId){
+        // 将新的公告加入到redis中
+        Inform inform = informMapper.getInform(informId);
+        HashMap<String, Object> map = new HashMap<>(1);
+        map.put("inform", inform);
+        redisUtil.set("inform", responseBean.buildOk(map));
+    }
+
+    /**
+     * 新建公告
+     * @param inform    公告对象
+     * @param claims    token对象
+     * @param timestamp 创建时间 时间戳
+     * @param username  日志记录 操作用户
+     * @return  yes/no
+     */
+    private String insertInform(Inform inform, Claims claims, Timestamp timestamp, String username){
+        // 新增公告
+        // 从token中获取用户id赋值给inform 公告
+        inform.setUserId(CastUtil.toInteger(claims.get("jti")));
+        // 插入数据库
+        inform.setCreateDate(timestamp);
+        int insert = informMapper.insert(inform);
+        // 返回信息
+        if (insert == 1){
+            redisUtil.set("newInform", inform.getId().toString());
+            newInformToRedis(inform.getId());
+            logService.createLog("新建公告", username,"新建公告:"+ inform.getTitle() + ",新建成功");
+            return responseBean.buildOkMsg("新增公告成功");
+        }else {
+            logService.createLog("新建公告", username,"新建公告:"+ inform.getTitle() + ",新建失败,数据库可能存在异常");
+            return responseBean.buildNoDataMsg("数据异常");
+        }
+    }
+
+    /**
+     * 修改公告
+     * @param inform    公告对象
+     * @param username  日志记录    操作用户
+     * @return  yes/no
+     */
+    private String updateInform(Inform inform, String username){
+        // 修改某公告
+        // 修改数据
+        int update = informMapper.updateById(inform);
+        // 返回信息
+        if (update == 1){
+            String key = "newInform";
+            if (redisUtil.get(key).toString().equals(inform.getId().toString())){
+                newInformToRedis(inform.getId());
             }
+            logService.createLog("修改公告", username, "修改公告:"+ inform.getTitle() + ",修改成功");
+            return responseBean.buildOkMsg("修改公告成功");
+        }else {
+            logService.createLog("修改公告", username,"修改公告:"+ inform.getTitle() + ",修改失败,数据库可能存在异常");
+            return responseBean.buildNoDataMsg("数据异常");
         }
     }
 
