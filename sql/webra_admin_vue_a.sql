@@ -11,7 +11,7 @@
  Target Server Version : 50732
  File Encoding         : 65001
 
- Date: 20/04/2021 00:08:10
+ Date: 21/04/2021 14:10:00
 */
 
 SET NAMES utf8mb4;
@@ -93,13 +93,13 @@ CREATE TABLE `wra_inform`  (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '公告标题',
   `user_id` int(20) NOT NULL COMMENT '用户id',
   `state` int(2) NOT NULL DEFAULT 0 COMMENT '公告类型',
-  `text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '公告内容',
+  `text` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '公告内容',
   `create_date` datetime NOT NULL COMMENT '创建时间',
   `update_date` datetime NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_inform_user`(`user_id`) USING BTREE,
   CONSTRAINT `fk_inform_user` FOREIGN KEY (`user_id`) REFERENCES `wra_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of wra_inform
@@ -211,6 +211,6 @@ CREATE TABLE `wra_user`  (
 -- ----------------------------
 -- Records of wra_user
 -- ----------------------------
-INSERT INTO `wra_user` VALUES (1, ' admin', 'webra', '82956b56f769234e5a646a14966c0c164f4ce46f5727886c', '/touxiang.gif', NULL, NULL, 1, '18231200000', '\r\nli_zhm@qq.com', 0, NULL, '2021-04-20 00:07:42', '2021-04-20 00:07:45');
+INSERT INTO `wra_user` VALUES (1, 'admin', 'webra', '82956b56f769234e5a646a14966c0c164f4ce46f5727886c', '/touxiang.gif', NULL, NULL, 1, '18231200000', '\r\nli_zhm@qq.com', 0, NULL, '2021-04-20 00:07:42', '2021-04-20 00:07:45');
 
 SET FOREIGN_KEY_CHECKS = 1;

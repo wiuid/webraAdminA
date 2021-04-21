@@ -42,14 +42,12 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         // 从请求头中提取token字段
         //获取header中的验证信息
         String authHeader = httpServletRequest.getHeader("token");
-
+        String URL = httpServletRequest.getRequestURI();
+        log.info("获取到的请求地址：" + URL);
         if (authHeader != null) {
             try {
-                // 将JWT 产生的token过期的报错进行吸收
-                Claims claims = JwtUtil.parseJWT(authHeader);
-                String subject = claims.getSubject();
                 // 获取用户名username
-                String username = String.valueOf(subject);
+                String username = JwtUtil.getUsername(authHeader);
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 根据用户名获取用户对象
                     UserDetails userDetails = userLoginService.loadUserByUsername(username);
@@ -64,6 +62,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 }
                 filterChain.doFilter(httpServletRequest, response);
             }catch (Exception e){
+                System.out.println(e);
                 // token过期 直接返回403
                 response.setHeader("Content-Type", "application/json");
                 response.setStatus(200);
