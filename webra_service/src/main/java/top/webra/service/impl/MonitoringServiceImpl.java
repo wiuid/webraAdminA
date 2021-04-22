@@ -3,6 +3,7 @@ package top.webra.service.impl;
 import com.alibaba.fastjson.JSON;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import oshi.SystemInfo;
 import oshi.hardware.*;
 import oshi.software.os.OperatingSystem;
@@ -30,6 +31,7 @@ import java.util.Map;
  */
 @Service
 @ComponentScan
+@Transactional(rollbackFor = Exception.class)
 public class MonitoringServiceImpl implements MonitoringService {
 
     /**

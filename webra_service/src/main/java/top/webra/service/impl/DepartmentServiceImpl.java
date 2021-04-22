@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.DepartmentMapper;
 import top.webra.mapper.UserMapper;
@@ -25,6 +26,7 @@ import java.util.*;
  * @Description: 部门逻辑业务类
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     private DepartmentMapper departmentMapper;

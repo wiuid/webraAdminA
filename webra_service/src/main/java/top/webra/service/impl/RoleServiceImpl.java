@@ -9,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.RoleMapper;
 import top.webra.mapper.UserMapper;
@@ -36,6 +37,7 @@ import java.util.List;
  * @Description: --
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class RoleServiceImpl implements RoleService{
 
     @Autowired

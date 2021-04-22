@@ -8,6 +8,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.DepartmentMapper;
 import top.webra.mapper.RoleMapper;
@@ -34,6 +35,7 @@ import java.util.HashMap;
  * @Description: --
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class InfoServiceImpl implements InfoService {
 
     @Value("${file-path.win}")

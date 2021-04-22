@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.AuthMapper;
 import top.webra.pojo.Auth;
@@ -24,6 +25,7 @@ import java.util.Map;
  * @Description: 权限逻辑业务类（空置，不动）
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class AuthServiceImpl implements AuthService {
 
     @Autowired

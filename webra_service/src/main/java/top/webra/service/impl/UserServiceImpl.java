@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.DepartmentMapper;
 import top.webra.mapper.InformMapper;
@@ -34,6 +35,7 @@ import java.util.List;
  * @Description: 用户逻辑业务类
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
