@@ -35,7 +35,6 @@ import java.util.HashMap;
  * @Description: --
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class InfoServiceImpl implements InfoService {
 
     @Value("${file-path.win}")

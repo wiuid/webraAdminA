@@ -35,7 +35,6 @@ import java.util.List;
  * @Description: 用户逻辑业务类
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;

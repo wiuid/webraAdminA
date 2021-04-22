@@ -37,7 +37,6 @@ import java.util.List;
  * @Description: --
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class RoleServiceImpl implements RoleService{
 
     @Autowired

@@ -34,7 +34,6 @@ import java.util.List;
  * @Description： 岗位逻辑业务类
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class PostServiceImpl implements PostService {
 
     @Autowired

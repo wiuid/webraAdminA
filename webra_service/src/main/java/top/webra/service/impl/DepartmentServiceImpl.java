@@ -26,7 +26,6 @@ import java.util.*;
  * @Description: 部门逻辑业务类
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     private DepartmentMapper departmentMapper;

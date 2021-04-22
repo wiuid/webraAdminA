@@ -25,7 +25,6 @@ import java.util.Map;
  * @Description: 权限逻辑业务类（空置，不动）
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class AuthServiceImpl implements AuthService {
 
     @Autowired

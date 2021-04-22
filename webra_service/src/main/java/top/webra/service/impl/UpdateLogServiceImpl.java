@@ -12,6 +12,5 @@ import top.webra.service.UpdateLogService;
  * @Description: 更新日志逻辑业务类
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class UpdateLogServiceImpl implements UpdateLogService {
 }

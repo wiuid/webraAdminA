@@ -31,7 +31,6 @@ import java.util.Map;
  */
 @Service
 @ComponentScan
-@Transactional(rollbackFor = Exception.class)
 public class MonitoringServiceImpl implements MonitoringService {
 
     /**

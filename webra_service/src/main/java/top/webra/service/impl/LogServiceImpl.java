@@ -33,7 +33,6 @@ import java.util.List;
  * @Description: 日志逻辑业务类
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
 public class LogServiceImpl implements LogService {
 
     @Autowired
