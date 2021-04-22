@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import top.webra.utils.RedisUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,7 +35,11 @@ public class CustomRunner implements ApplicationRunner {
         if (!file.exists()){
             file.mkdirs();
         }
-        // redis中一定要存在key = newInform的值
-        redisUtil.set("newInform", "0");
+        // 最新公告
+        String newInform = "newInform";
+        if (!redisUtil.hasKey(newInform)){
+            redisUtil.set(newInform, "0");
+        }
+
     }
 }
