@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService {
             HashMap<String, Object> data = new HashMap<>(1);
             data.put("userList", JSON.toJSONString(users));
             String res = responseBean.buildOk(data);
-            redisUtil.set(key, res, 3600000L);
+            redisUtil.set(key, res, 3600L);
             return res;
         }
     }

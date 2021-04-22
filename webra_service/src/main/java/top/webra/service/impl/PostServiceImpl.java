@@ -91,7 +91,7 @@ public class PostServiceImpl implements PostService {
             HashMap<String, Object> data = new HashMap<>(1);
             data.put("postList", posts);
             String res = responseBean.buildOk(data);
-            redisUtil.set("postSelect", res, 3600000L);
+            redisUtil.set("postSelect", res, 3600L);
             return res;
         }
     }

@@ -106,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
             HashMap<String, Object> data = new HashMap<>(1);
             data.put("authTree", auths);
             String authTree = responseBean.buildOk(data);
-            redisUtil.set("authTree", authTree, 3600000L);
+            redisUtil.set("authTree", authTree, 3600L);
             return authTree;
         }
     }
