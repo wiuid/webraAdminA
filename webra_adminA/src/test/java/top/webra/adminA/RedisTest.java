@@ -13,6 +13,7 @@ import top.webra.pojo.User;
 import top.webra.utils.RedisUtil;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -56,5 +57,11 @@ public class RedisTest {
     public void testGet() {
         String value = this.redisTemplate.opsForValue().get("key");
         System.out.println(value);
+    }
+
+    @Test
+    public void likeTest(){
+        Set<String> keys = this.redisTemplate.keys("i*");
+        System.out.println();
     }
 }
