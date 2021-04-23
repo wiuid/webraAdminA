@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import top.webra.bean.ResponseBean;
 import top.webra.service.impl.UserLoginServiceImpl;
 import top.webra.util.JwtUtil;
+import top.webra.utils.RedisUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,56 +37,63 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private ResponseBean responseBean;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 从请求头中提取token字段
         //获取header中的验证信息
-        String authHeader = httpServletRequest.getHeader("token");
-        String URL = httpServletRequest.getRequestURI();
-        log.info("获取到的请求地址：" + URL);
-        if (authHeader != null) {
-            try {
-                // 获取用户名username
-                String username = JwtUtil.getUsername(authHeader);
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    // 根据用户名获取用户对象
-                    UserDetails userDetails = userLoginService.loadUserByUsername(username);
-
-                    if (userDetails != null) {
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                        //设置为已登录
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
+        String token = httpServletRequest.getHeader("token");
+        String url = httpServletRequest.getRequestURI();
+        log.info("获取到的请求地址：" + url);
+        if (token != null) {
+            // 获取用户名username
+            Claims claims = JwtUtil.getClaims(token);
+            String username = String.valueOf(claims.get("sub"));
+            boolean tokenTimeout = JwtUtil.getTokenTimeout(claims);
+            boolean tokenHas = redisUtil.hasKey("token" + token);
+            // token过期 和 检测上下文中是否存在该用户的令牌
+            if (tokenHas && tokenTimeout && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // 根据用户名获取用户对象
+                UserDetails userDetails = userLoginService.loadUserByUsername(username);
+                if (userDetails != null) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                    // 将该用户设置为已登录
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
                 filterChain.doFilter(httpServletRequest, response);
-            }catch (Exception e){
-                System.out.println(e);
-                // token过期 直接返回403
-                response.setHeader("Content-Type", "application/json");
-                response.setStatus(200);
-                response.setCharacterEncoding("utf-8");
-                PrintWriter writer = response.getWriter();
-                writer.write(responseBean.buildNotLogin("登录超时"));
-                writer.flush();
-                log.info("token 过期");
+            }else if (tokenHas && tokenTimeout && SecurityContextHolder.getContext().getAuthentication() != null){
+                filterChain.doFilter(httpServletRequest, response);
+            }else {
+                customResponseLoginErr(response, "登录超时");
             }
         }else {
             // 没有token的情况，判断路径
             String uri = httpServletRequest.getRequestURI();
-            if ( uri.contains("/system/") ){
-                response.setHeader("Content-Type", "application/json");
-                response.setStatus(200);
-                response.setCharacterEncoding("utf-8");
-                PrintWriter writer = response.getWriter();
-                writer.write(responseBean.buildNotLogin("当前未登录，跳转至登录页"));
-                writer.flush();
+            String str = "/system/";
+            if ( uri.contains(str) ){
+                customResponseLoginErr(response, "未登录");
             }else {
                 filterChain.doFilter(httpServletRequest, response);
             }
 
         }
+    }
+
+    private void customResponseLoginErr(HttpServletResponse response, String msg) {
+        try {
+            response.setHeader("Content-Type", "application/json");
+            response.setStatus(200);
+            response.setCharacterEncoding("utf-8");
+            PrintWriter writer = response.getWriter();
+            writer.write(responseBean.buildNotLogin(msg));
+            writer.flush();
+        }catch (IOException e){
+            System.out.println("IO异常");
+        }
+
     }
 }
