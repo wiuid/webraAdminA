@@ -1,5 +1,6 @@
 package top.webra.adminA;
 
+import com.sun.org.apache.bcel.internal.generic.LNEG;
 import org.junit.Test;
 import top.webra.util.MD5Util;
 
@@ -88,7 +89,12 @@ public class OtherTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-
+    @Test
+    public void longTest(){
+        Long l = 3L;
+        long l2 = 2L;
+        System.out.println(l>l2);
     }
 }
