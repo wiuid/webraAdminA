@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.security.Key;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,11 @@ public class RedisUtil {
         this.redisTemplate = redisTemplate;
     }
     //=============================common============================
+
+    public Set<String> getLikeKey(String key){
+        return redisTemplate.keys(key);
+    }
+
     /**
      * 指定缓存失效时间
      * @param key 键
@@ -73,14 +79,16 @@ public class RedisUtil {
      * @param key 可以传一个值 或多个
      */
     @SuppressWarnings("unchecked")
-    public void del(String ... key){
+    public Long del(String ... key){
         if(key!=null&&key.length>0){
             if(key.length==1){
-                redisTemplate.delete(key[0]);
+                Boolean delete = redisTemplate.delete(key[0]);
+                return delete ? 1L:0L;
             }else{
-                redisTemplate.delete(CollectionUtils.arrayToList(key));
+                return redisTemplate.delete(CollectionUtils.arrayToList(key));
             }
         }
+        return 0L;
     }
 
     //============================String=============================
@@ -173,7 +181,7 @@ public class RedisUtil {
      * @param key 键
      * @return 对应的多个键值
      */
-    public Map<Object,Object> hmget(String key){
+    public Map<String,Object> hmget(String key){
         return redisTemplate.opsForHash().entries(key);
     }
 
@@ -389,11 +397,43 @@ public class RedisUtil {
     //===============================list=================================
 
     /**
+     * 向列表key 的头部插入一条数据
+     * @param key   键
+     * @param value 值
+     * @return  true/false
+     */
+    public boolean llset(String key, Object value){
+        try {
+            redisTemplate.opsForList().leftPush(key, value);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    /**
+     * 向列表key 的头部插入一条数据
+     * @param key   键
+     * @param value 值
+     * @param time  秒
+     * @return  true/false
+     */
+    public boolean llset(String key, Object value, long time){
+        try {
+            redisTemplate.opsForList().leftPush(key, value);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * 获取list缓存的内容
      * @param key 键
      * @param start 开始
      * @param end 结束  0 到 -1代表所有值
-     * @return
+     * @return  list
      */
     public List<Object> lGet(String key, long start, long end){
         try {
@@ -407,7 +447,7 @@ public class RedisUtil {
     /**
      * 获取list缓存的长度
      * @param key 键
-     * @return
+     * @return  length
      */
     public long lGetListSize(String key){
         try {
@@ -422,7 +462,7 @@ public class RedisUtil {
      * 通过索引 获取list中的值
      * @param key 键
      * @param index 索引  index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
-     * @return
+     * @return  value
      */
     public Object lGetIndex(String key,long index){
         try {
@@ -437,7 +477,7 @@ public class RedisUtil {
      * 将list放入缓存
      * @param key 键
      * @param value 值
-     * @return
+     * @return  true/false
      */
     public boolean lSet(String key, Object value) {
         try {
@@ -454,7 +494,7 @@ public class RedisUtil {
      * @param key 键
      * @param value 值
      * @param time 时间(秒)
-     * @return
+     * @return  true/false
      */
     public boolean lSet(String key, Object value, long time) {
         try {
@@ -473,7 +513,7 @@ public class RedisUtil {
      * 将list放入缓存
      * @param key 键
      * @param value 值
-     * @return
+     * @return  true/false
      */
     public boolean lSet(String key, List<Object> value) {
         try {
@@ -490,7 +530,7 @@ public class RedisUtil {
      * @param key 键
      * @param value 值
      * @param time 时间(秒)
-     * @return
+     * @return  true/false
      */
     public boolean lSet(String key, List<Object> value, long time) {
         try {
@@ -510,7 +550,7 @@ public class RedisUtil {
      * @param key 键
      * @param index 索引
      * @param value 值
-     * @return
+     * @return  true/false
      */
     public boolean lUpdateIndex(String key, long index,Object value) {
         try {
