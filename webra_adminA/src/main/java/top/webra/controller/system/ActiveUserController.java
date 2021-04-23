@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import top.webra.service.impl.ActiveUsersServiceImpl;
@@ -17,14 +18,19 @@ import top.webra.service.impl.ActiveUsersServiceImpl;
 @Controller
 @ResponseBody
 @RequestMapping("/system/monitoring/user")
+@PreAuthorize("hasRole('ROLE_active')")
 public class ActiveUserController {
 
     @Autowired
     private ActiveUsersServiceImpl activeUserService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_active')")
     public String getActiveUser(){
         return activeUserService.getActiveUserList();
+    }
+
+    @PostMapping("/del")
+    public String delActiveUser(String Uuid){
+        return activeUserService.deleteActiveUserList(Uuid);
     }
 }

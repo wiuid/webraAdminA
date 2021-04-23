@@ -9,4 +9,11 @@ public interface ActiveUsersService {
      * @return  在线人员列表
      */
     String getActiveUserList();
+
+    /**
+     * 在线人员踢下线
+     * @param UUID  在线用户唯一编号
+     * @return  yes/no
+     */
+    String deleteActiveUserList(String UUID);
 }

@@ -42,4 +42,22 @@ public class ActiveUsersServiceImpl implements ActiveUsersService {
             return responseBean.buildOk(data);
         }
     }
+
+    @Override
+    public String deleteActiveUserList(String Uuid) {
+        Set<String> likeKey = redisUtil.getLikeKey("token*");
+        if (likeKey.isEmpty()){
+            return responseBean.buildWarring("异常操作");
+        }else {
+            for (String key : likeKey) {
+                Map<String, Object> hmget = redisUtil.hmget(key);
+                String redisUuid = hmget.get("uuid").toString();
+                if (redisUuid.equals(Uuid)) {
+                    redisUtil.del(key);
+                    return responseBean.buildOkMsg("踢下线成功！");
+                }
+            }
+            return responseBean.buildWarring("未查到该人员！");
+        }
+    }
 }
