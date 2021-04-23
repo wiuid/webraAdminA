@@ -70,7 +70,7 @@ public class JwtUtil {
 
     /**
      * 解析JWT
-     * Claims的几个属性   jti：id    sub：username  roles：auth
+     * Claims的几个属性   jti：id    sub：username  roles：auth     exp 过期时间 秒
      * {jti=1, sub=admin, iat=1615637863, roles=1,2,3,4,5,6,7,8,9,10,11,12,13,14,, exp=1615641463}
      * @param jwtStr    token
      */
@@ -110,5 +110,18 @@ public class JwtUtil {
         Claims claims = getClaims(token);
         return claims.get("roles").toString();
     }
+    /** 解析token 判断 用户是否过期 , true为未过期， false为过期*/
+    public static boolean getTokenTimeout(String token){
+        Claims claims = getClaims(token);
+        Long exp = Long.valueOf(claims.get("exp").toString());
+        return exp > System.currentTimeMillis();
+    }
+    /** 解析token 判断 用户是否过 , true期为未过期， false为过期*/
+    public static boolean getTokenTimeout(Claims claims){
+        Long exp = Long.valueOf(claims.get("exp").toString());
+        long now = System.currentTimeMillis()/1000;
+        return exp > now;
+    }
+
 
 }
