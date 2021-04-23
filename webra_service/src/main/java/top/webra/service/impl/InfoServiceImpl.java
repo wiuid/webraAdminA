@@ -20,6 +20,7 @@ import top.webra.service.InfoService;
 import top.webra.util.CastUtil;
 import top.webra.util.JwtUtil;
 import top.webra.util.MD5Util;
+import top.webra.utils.RedisUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,6 +42,9 @@ public class InfoServiceImpl implements InfoService {
     private String winPath;
     @Value("${file-path.lin}")
     private String linPath;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Autowired
     private ResponseBean responseBean;
@@ -113,6 +117,7 @@ public class InfoServiceImpl implements InfoService {
                 return responseBean.buildNoDataMsg("数据异常");
             }
         }else {
+            redisUtil.del("token" + token);
             return responseBean.buildUserErr();
         }
     }
@@ -142,6 +147,7 @@ public class InfoServiceImpl implements InfoService {
                 return responseBean.buildNoDataMsg("原密码错误");
             }
         }else {
+            redisUtil.del("token" + token);
             return responseBean.buildUserErr();
         }
     }
@@ -198,6 +204,7 @@ public class InfoServiceImpl implements InfoService {
                 return responseBean.buildNoDataMsg("图片处理异常，请重新提交");
             }
         }else {
+            redisUtil.del("token" + token);
             return responseBean.buildUserErr();
         }
     }
