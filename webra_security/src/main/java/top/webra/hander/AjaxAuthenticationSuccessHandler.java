@@ -12,12 +12,17 @@ import top.webra.pojo.Role;
 import top.webra.pojo.User;
 import top.webra.service.impl.AuthServiceImpl;
 import top.webra.util.CastUtil;
+import top.webra.util.IpUtil;
 import top.webra.util.JwtUtil;
+import top.webra.utils.RedisUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 登录成功处理器
@@ -37,6 +42,8 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
     @Autowired
     private AuthServiceImpl authService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
@@ -59,6 +66,21 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         Map<String, Object> data = authService.getUserAside(token);
         // token
         data.put("token",token);
+
+        UUID uuid = UUID.randomUUID();
+        String auth = authentication.getDetails().toString();
+        String ip = auth.substring(auth.lastIndexOf("s: "), auth.lastIndexOf(";")).split(" ")[1];
+        String city = IpUtil.getCity(ip);
+
+        HashMap<String, Object> navtive = new HashMap<>(5);
+        navtive.put("uuid", uuid.toString());
+        navtive.put("ip", ip);
+        navtive.put("username", user.getUsername());
+        navtive.put("city", city);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        navtive.put("date", simpleDateFormat.format(System.currentTimeMillis()));
+
+        redisUtil.hmset("token"+ token, navtive, 3600L);
 
         httpServletResponse.setContentType("application/json;charset=utf-8");
         httpServletResponse.getWriter().write(responseBean.buildOk(data));
