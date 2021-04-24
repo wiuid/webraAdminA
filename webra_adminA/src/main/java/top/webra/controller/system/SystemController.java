@@ -1,5 +1,7 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import top.webra.bean.ResponseBean;
 @Controller
 @ResponseBody
 @RequestMapping("/system")
+@Api(tags = "系统管理")
 public class SystemController {
     @Autowired
     private ResponseBean responseBean;
@@ -28,6 +31,7 @@ public class SystemController {
      * 三个echarts图表信息
      */
     @GetMapping
+    @ApiOperation("无意义")
     public ResponseBean getTableDate(){
         responseBean = ResponseBean.ok("success");
         return responseBean;

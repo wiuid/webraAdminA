@@ -1,5 +1,7 @@
 package top.webra.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,10 +19,12 @@ import top.webra.bean.ResponseBean;
 @Controller
 @ResponseBody
 @RequestMapping("/index")
+@Api(tags = "首页，非后台")
 public class IndexController {
     @Autowired
     private ResponseBean responseBean;
     @GetMapping
+    @ApiOperation(value = "/index首页接口")
     public ResponseBean index(){
         responseBean.setStatus(200);
         responseBean.setMsg("hello webra admin vue A");

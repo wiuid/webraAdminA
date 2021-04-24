@@ -1,5 +1,7 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @ResponseBody
 @RequestMapping("/system/user/role")
+@Api(tags = "角色管理")
 public class RoleController {
     @Autowired
     private RoleServiceImpl roleService;
@@ -29,6 +32,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @GetMapping
+    @ApiOperation("查询角色")
     public String getTableDate(String title, String code, Integer state, String createDateStart, String createDateEnd, Integer page){
         return roleService.getRoleList(title,code,state,createDateStart,createDateEnd,page);
     }
@@ -39,6 +43,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @GetMapping("/get")
+    @ApiOperation("获取单个角色")
     public String getRole(Integer id){
         return roleService.getRole(id);
     }
@@ -48,6 +53,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping("/tree")
+    @ApiOperation("获取角色列表，用于选择")
     public String getRoleTree(){
         return roleService.getRoleTree();
     }
@@ -59,6 +65,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @PostMapping("/save")
+    @ApiOperation("新建/修改角色")
     public String saveRole(@RequestHeader("token") String token, Role role){
         return roleService.saveRole(token, role);
     }
@@ -69,6 +76,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @DeleteMapping("/delete")
+    @ApiOperation("删除角色")
     public String deleteRole(@RequestHeader("token") String token, int id){
         return roleService.deleteRole(token, id);
     }
@@ -79,6 +87,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @DeleteMapping("/deletes")
+    @ApiOperation("批量删除角色")
     public String deleteRoles(@RequestHeader("token") String token, String ids){
         return roleService.deleteRoles(token, ids);
     }
@@ -89,6 +98,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @PostMapping("/state")
+    @ApiOperation("修改角色状态")
     public String blockRole(@RequestHeader("token") String token, int id){
         return roleService.updateRoleSwitch(token, id);
     }
@@ -99,6 +109,7 @@ public class RoleController {
      */
     @PreAuthorize("hasRole('ROLE_auth')")
     @GetMapping("/export")
+    @ApiOperation("导出角色")
     public void export(HttpServletResponse response){
         roleService.exportRoles(response);
     }

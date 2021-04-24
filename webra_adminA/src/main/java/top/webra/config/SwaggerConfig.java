@@ -35,10 +35,10 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
-                .title("XX项目接口文档")
-                .description("XX项目描述")
-                .contact(new Contact("作者", "作者URL", "作者Email"))
-                .version("1.0")
+                .title("WebraAdminVueA项目接口文档")
+                .description("本项目旨在构建一个基础的前后端通用平台，便于二次开发！")
+                .contact(new Contact("webra", "https://www.webra.top/", "li_zhm@qq.com"))
+                .version("1.1.1")
                 .build();
     }
 }

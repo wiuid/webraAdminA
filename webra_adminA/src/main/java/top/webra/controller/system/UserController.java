@@ -1,5 +1,7 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import top.webra.service.impl.UserServiceImpl;
 @Controller
 @ResponseBody
 @RequestMapping("/system/user")
+@Api(tags = "用户管理")
 public class UserController {
 
     @Autowired
@@ -32,18 +35,21 @@ public class UserController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping
+    @ApiOperation("查询用户")
     public String getTableDate(@RequestHeader("token") String token, Integer departmentId, String username,Integer phone, Integer state, String createDateStart, String createDateEnd, Integer page){
         return userService.getUserList(token, departmentId,username,phone,state,createDateStart,createDateEnd,page);
     }
     /** 获取单用户信息 */
     @GetMapping("/get")
     @PreAuthorize("hasRole('ROLE_user')")
+    @ApiOperation("获取单个用户")
     public String getUser(Integer id){
         return userService.selectUser(id);
     }
 
     /** 获取全部用户名信息 用于选择 */
     @GetMapping("/tree")
+    @ApiOperation("获取用户列表，用于选择")
     public String getUserByNickname(){
         return userService.selectUserByNickname();
     }
@@ -54,6 +60,7 @@ public class UserController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @PostMapping("/save")
+    @ApiOperation("新建/修改用户")
     public String saveUser(@RequestHeader("token") String token, User user){
         return userService.saveUser(token, user);
     }
@@ -61,6 +68,7 @@ public class UserController {
     /** 修改用户密码 */
     @PreAuthorize("hasRole('ROLE_user')")
     @PostMapping("/password")
+    @ApiOperation("修改用户密码")
     public String updatePassword(@RequestHeader("token") String token, Integer id, String rootPassword, String userPassword){
         return userService.updatePassword(token, id, rootPassword, userPassword);
     }
@@ -68,6 +76,7 @@ public class UserController {
     /** 修改用户状态 */
     @PreAuthorize("hasRole('ROLE_user')")
     @PostMapping("/state")
+    @ApiOperation("修改用户状态")
     public String updateUserState(@RequestHeader("token") String token, Integer id){
         return userService.updateUserState(token, id);
     }
@@ -78,6 +87,7 @@ public class UserController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @DeleteMapping("/delete")
+    @ApiOperation("删除用户")
     public String deleteUser(@RequestHeader("token") String token, int id){
         return userService.deleteUser(token, id);
     }
@@ -88,6 +98,7 @@ public class UserController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @DeleteMapping("/deletes")
+    @ApiOperation("批量删除用户")
     public String deleteUsers(@RequestHeader("token") String token, String ids){
         return userService.deleteUsers(token, ids);
     }

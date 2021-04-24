@@ -1,5 +1,7 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @ResponseBody
 @RequestMapping("/system/department/post")
+@Api(tags = "岗位管理")
 public class PostController {
     @Autowired
     private PostServiceImpl postService;
@@ -29,6 +32,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @GetMapping
+    @ApiOperation("查询岗位")
     public String getTableDate(String title, Integer state, Integer page){
         return postService.getPost(title,  state, page);
     }
@@ -39,6 +43,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @GetMapping("/get")
+    @ApiOperation("获取单个岗位")
     public String getPostById(Integer id){
         return postService.getPostById(id);
     }
@@ -48,6 +53,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping("/tree")
+    @ApiOperation("获取岗位列表，用于用户选择")
     public String getPostTree(){
         return postService.getPostTree();
     }
@@ -58,6 +64,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @PostMapping("/save")
+    @ApiOperation("新建/修改岗位")
     public String savePost(@RequestHeader("token") String token, Post post){
         return postService.savePost(token, post);
     }
@@ -66,6 +73,7 @@ public class PostController {
      * 修改岗位状态
      * @param id 岗位id
      */
+    @ApiOperation("修改岗位状态")
     @PreAuthorize("hasRole('ROLE_post')")
     @PostMapping("/state")
     public String updatePostState(@RequestHeader("token") String token, Integer id){
@@ -78,6 +86,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @DeleteMapping("/delete")
+    @ApiOperation("删除岗位")
     public String deletePost(@RequestHeader("token") String token, int id){
         return postService.deletePost(token, id);
     }
@@ -88,6 +97,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @DeleteMapping("/deletes")
+    @ApiOperation("批量删除岗位")
     public String deletePosts(@RequestHeader("token") String token, String ids){
         return postService.deletePosts(token, ids);
     }
@@ -97,6 +107,7 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_post')")
     @GetMapping("/export")
+    @ApiOperation("导出岗位")
     public void export(HttpServletResponse response){
         postService.exportPosts(response);
     }

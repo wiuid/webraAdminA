@@ -1,5 +1,8 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,6 +20,7 @@ import top.webra.service.impl.DepartmentServiceImpl;
 @Controller
 @ResponseBody
 @RequestMapping("/system/department")
+@Api(tags = "部门管理")
 public class DepartmentController {
     @Autowired
     private DepartmentServiceImpl departmentService;
@@ -26,6 +30,7 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @GetMapping
+    @ApiOperation("获取全部部门信息")
     public String getTableDate(@RequestHeader("token") String token){
         return departmentService.getDepartmentList(token);
     }
@@ -36,6 +41,8 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @GetMapping("/get")
+    @ApiOperation("根据id获取单个部门信息")
+    @ApiParam(name = "id", value = "部门id")
     public String getDepartment(Integer id){
         return departmentService.getDepartment(id);
     }
@@ -45,6 +52,7 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_user')")
     @GetMapping("/tree")
+    @ApiOperation("获取部门的选择树，用于上级部门、用户选择")
     public String getDepartmentIdTitle(){
         return departmentService.getDepartmentIdTitle();
     }
@@ -56,7 +64,9 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @PostMapping("/save")
-    public String saveUser(@RequestHeader("token")String token, Department department){
+    @ApiOperation("新建/修改部门信息")
+    @ApiParam(name = "department", value = "部门对象")
+    public String saveDepartment(@RequestHeader("token")String token, Department department){
         return departmentService.saveDepartment(token, department);
     }
 
@@ -65,6 +75,8 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @PostMapping("/state")
+    @ApiOperation("更新部门状态")
+    @ApiParam(name = "id", value = "部门id")
     public String updateState(@RequestHeader("token")String token, Integer id){
         return departmentService.updateDepartmentState(token, id);
     }
@@ -75,6 +87,8 @@ public class DepartmentController {
      */
     @PreAuthorize("hasRole('ROLE_department')")
     @DeleteMapping("/delete")
+    @ApiOperation("删除部门")
+    @ApiParam(name = "id", value = "部门id")
     public String deleteDepartment(@RequestHeader("token")String token, Integer id){
         return departmentService.deleteDepartment(token, id);
     }

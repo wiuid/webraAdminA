@@ -1,5 +1,8 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,17 +22,20 @@ import top.webra.service.impl.ActiveUsersServiceImpl;
 @ResponseBody
 @RequestMapping("/system/monitoring/user")
 @PreAuthorize("hasRole('ROLE_active')")
+@Api(tags = "在线用户管理")
 public class ActiveUserController {
 
     @Autowired
     private ActiveUsersServiceImpl activeUserService;
 
     @GetMapping
+    @ApiOperation("查询所有在线用户")
     public String getActiveUser(){
         return activeUserService.getActiveUserList();
     }
 
     @PostMapping("/del")
+    @ApiOperation("踢下线某个用户")
     public String delActiveUser(String Uuid){
         return activeUserService.deleteActiveUserList(Uuid);
     }

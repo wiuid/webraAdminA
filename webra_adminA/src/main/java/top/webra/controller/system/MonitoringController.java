@@ -1,5 +1,7 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,7 @@ import java.util.Map;
 @Controller
 @ResponseBody
 @RequestMapping("/system/monitoring")
+@Api(tags = "服务监控")
 public class MonitoringController {
     @Autowired
     private ResponseBean responseBean;
@@ -40,6 +43,7 @@ public class MonitoringController {
      */
     @PreAuthorize("hasRole('ROLE_monitoring')")
     @GetMapping
+    @ApiOperation("服务监控")
     public ResponseBean getTableDate(){
         Map<String, String> cpuInfo = monitoringService.getCpuInfo();
         Map<String, String> memoryInfo = monitoringService.getMemoryInfo();

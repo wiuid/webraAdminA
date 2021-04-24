@@ -1,5 +1,7 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @ResponseBody
 @PreAuthorize("hasRole('ROLE_log')")
 @RequestMapping("/system/site/log")
+@Api(tags = "日志管理")
 public class LogController {
     @Autowired
     private LogServiceImpl logService;
@@ -27,6 +30,7 @@ public class LogController {
      * @return 日志列表
      */
     @GetMapping
+    @ApiOperation("查询日志")
     public String getTableDate(String title, String createDateStart, String createDateEnd, Integer page){
         return logService.getLogList(title,createDateStart,createDateEnd,page);
     }
@@ -36,6 +40,7 @@ public class LogController {
      * @param id 日志id
      */
     @DeleteMapping("/delete")
+    @ApiOperation("删除日志")
     public String deleteLog(int id){
         return logService.deleteLog(id);
     }
@@ -45,6 +50,7 @@ public class LogController {
      * @param ids 日志ids列表字符串
      */
     @DeleteMapping("/deletes")
+    @ApiOperation("批量删除日志")
     public String deleteLogs(@RequestHeader("token")String token, String ids){
         return logService.deleteLogs(token, ids);
     }
@@ -52,6 +58,7 @@ public class LogController {
      * 清空日志
      */
     @DeleteMapping("/empty")
+    @ApiOperation("清空日志")
     public String emptyLog(@RequestHeader("token")String token){
         return logService.emptyLog(token);
     }
@@ -59,6 +66,7 @@ public class LogController {
      * 导出日志
      */
     @GetMapping("/export")
+    @ApiOperation("导出日志")
     public void export(@RequestHeader("token")String token, HttpServletResponse response){
         logService.exportLog(token, response);
     }

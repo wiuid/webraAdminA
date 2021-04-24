@@ -69,7 +69,7 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         data.put("token",token);
 
         UUID uuid = UUID.randomUUID();
-//        String auth = authentication.getDetails().toString();
+        String auth = authentication.getDetails().toString();
 //        String ip = auth.substring(auth.lastIndexOf("s: "), auth.lastIndexOf(";")).split(" ")[1];
 
         String ip = httpServletRequest.getHeader("X-Forwarded-For");

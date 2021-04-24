@@ -1,5 +1,7 @@
 package top.webra.controller.system;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.lang.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import top.webra.service.impl.InformServiceImpl;
 @Controller
 @ResponseBody
 @RequestMapping("/system/site/inform")
+@Api(tags = "公告管理")
 public class InformController {
     @Autowired
     private InformServiceImpl informService;
@@ -29,6 +32,7 @@ public class InformController {
      * @return 公告列表
      */
     @GetMapping
+    @ApiOperation("查询公告")
     public String getTableDate(String title, Integer state, Integer page, @Nullable Integer pageSize, String createDateStart, String createDateEnd){
         return informService.selectInformList(title,state,page,pageSize,createDateStart,createDateEnd);
     }
@@ -40,6 +44,7 @@ public class InformController {
      */
     @PreAuthorize("hasRole('ROLE_inform')")
     @GetMapping("/get")
+    @ApiOperation("查看单个公告")
     public String getInform(Integer id){
         return informService.selectInform(id);
     }
@@ -50,6 +55,7 @@ public class InformController {
      * @return  公告信息
      */
     @GetMapping("hget")
+    @ApiOperation("首页查询单个公告")
     public String getInformByHome(Integer id){
         return informService.getInform(id);
     }
@@ -59,6 +65,7 @@ public class InformController {
      */
     @PreAuthorize("hasRole('ROLE_inform')")
     @PostMapping("/save")
+    @ApiOperation("新建/修改公告")
     public String saveInform(Inform inform, @RequestHeader("token") String token){
         return informService.saveInform(inform,token);
     }
@@ -69,6 +76,7 @@ public class InformController {
      */
     @PreAuthorize("hasRole('ROLE_inform')")
     @DeleteMapping("/delete")
+    @ApiOperation("删除公告")
     public String deleteInform(@RequestHeader("token") String token, int id){
         return informService.deleteInform(token, id);
     }
@@ -79,6 +87,7 @@ public class InformController {
      */
     @PreAuthorize("hasRole('ROLE_inform')")
     @DeleteMapping("/deletes")
+    @ApiOperation("批量删除公告")
     public String deleteInforms(@RequestHeader("token") String token,String ids){
         return informService.deleteInforms(token, ids);
     }

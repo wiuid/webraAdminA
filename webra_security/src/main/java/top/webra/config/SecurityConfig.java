@@ -50,6 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 // 没有登录访问资源的话，返回 code:0
                 .httpBasic().authenticationEntryPoint(ajaxAuthenticationEntryPoint);
+        http
+                .headers().frameOptions().sameOrigin();
 
         http
                 .authorizeRequests()
@@ -65,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**",
                         "/swagger-resources/**",
                         "/profile/**",
-                        "/v3/**").anonymous()
+                        "/v3/**").permitAll()
                 .anyRequest()
                 // 其他 url 需要身份认证
                 .authenticated();
