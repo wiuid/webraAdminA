@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -68,10 +69,12 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
         data.put("token",token);
 
         UUID uuid = UUID.randomUUID();
-        String auth = authentication.getDetails().toString();
-        String ip = auth.substring(auth.lastIndexOf("s: "), auth.lastIndexOf(";")).split(" ")[1];
-        String city = IpUtil.getCity(ip);
+//        String auth = authentication.getDetails().toString();
+//        String ip = auth.substring(auth.lastIndexOf("s: "), auth.lastIndexOf(";")).split(" ")[1];
 
+        String ip = httpServletRequest.getHeader("X-Forwarded-For");
+
+        String city = IpUtil.getCity(ip);
         HashMap<String, Object> navtive = new HashMap<>(5);
         navtive.put("uuid", uuid.toString());
         navtive.put("ip", ip);
