@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import top.webra.bean.ResponseBean;
 import top.webra.pojo.Inform;
 import top.webra.service.impl.InformServiceImpl;
 
@@ -27,6 +28,8 @@ public class InformController {
     @Autowired
     private InformServiceImpl informService;
 
+    @Autowired
+    private ResponseBean responseBean;
     /**
      * 所需参数：公告标题、时间、程度、页码
      * @return 公告列表
@@ -34,6 +37,10 @@ public class InformController {
     @GetMapping
     @ApiOperation("查询公告")
     public String getTableDate(String title, Integer state, Integer page, @Nullable Integer pageSize, String createDateStart, String createDateEnd){
+        boolean b = state != 1 && state != 0;
+        if (b || page<1 ) {
+            return responseBean.buildWarring("请求违法");
+        }
         return informService.selectInformList(title,state,page,pageSize,createDateStart,createDateEnd);
     }
 
@@ -46,6 +53,9 @@ public class InformController {
     @GetMapping("/get")
     @ApiOperation("查看单个公告")
     public String getInform(Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return informService.selectInform(id);
     }
 
@@ -57,6 +67,9 @@ public class InformController {
     @GetMapping("hget")
     @ApiOperation("首页查询单个公告")
     public String getInformByHome(Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return informService.getInform(id);
     }
     /**
@@ -67,6 +80,9 @@ public class InformController {
     @PostMapping("/save")
     @ApiOperation("新建/修改公告")
     public String saveInform(Inform inform, @RequestHeader("token") String token){
+        if (inform.getId() < 0){
+            return responseBean.buildWarring("请求违法");
+        }
         return informService.saveInform(inform,token);
     }
 
@@ -77,7 +93,10 @@ public class InformController {
     @PreAuthorize("hasRole('ROLE_inform')")
     @DeleteMapping("/delete")
     @ApiOperation("删除公告")
-    public String deleteInform(@RequestHeader("token") String token, int id){
+    public String deleteInform(@RequestHeader("token") String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return informService.deleteInform(token, id);
     }
 

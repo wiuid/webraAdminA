@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import top.webra.bean.ResponseBean;
 import top.webra.pojo.Department;
 import top.webra.service.impl.DepartmentServiceImpl;
 
@@ -24,6 +25,8 @@ import top.webra.service.impl.DepartmentServiceImpl;
 public class DepartmentController {
     @Autowired
     private DepartmentServiceImpl departmentService;
+    @Autowired
+    private ResponseBean responseBean;
 
     /**
      * @return 部门列表
@@ -44,6 +47,9 @@ public class DepartmentController {
     @ApiOperation("根据id获取单个部门信息")
     @ApiParam(name = "id", value = "部门id")
     public String getDepartment(Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return departmentService.getDepartment(id);
     }
 
@@ -67,6 +73,11 @@ public class DepartmentController {
     @ApiOperation("新建/修改部门信息")
     @ApiParam(name = "department", value = "部门对象")
     public String saveDepartment(@RequestHeader("token")String token, Department department){
+        boolean b = department.getSuperId() != null && department.getSuperId() < 0;
+        boolean b1 = department.getUserId() != null && department.getUserId() < 0;
+        if (department.getId() < 0 || b || b1){
+            return responseBean.buildWarring("请求违法");
+        }
         return departmentService.saveDepartment(token, department);
     }
 
@@ -78,6 +89,9 @@ public class DepartmentController {
     @ApiOperation("更新部门状态")
     @ApiParam(name = "id", value = "部门id")
     public String updateState(@RequestHeader("token")String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return departmentService.updateDepartmentState(token, id);
     }
 
@@ -90,6 +104,9 @@ public class DepartmentController {
     @ApiOperation("删除部门")
     @ApiParam(name = "id", value = "部门id")
     public String deleteDepartment(@RequestHeader("token")String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return departmentService.deleteDepartment(token, id);
     }
 }

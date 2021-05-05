@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import top.webra.bean.ResponseBean;
 import top.webra.pojo.User;
 import top.webra.service.impl.UserServiceImpl;
 
@@ -21,6 +22,8 @@ import top.webra.service.impl.UserServiceImpl;
 @RequestMapping("/system/user")
 @Api(tags = "用户管理")
 public class UserController {
+    @Autowired
+    private ResponseBean responseBean;
 
     @Autowired
     private UserServiceImpl userService;
@@ -44,6 +47,9 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_user')")
     @ApiOperation("获取单个用户")
     public String getUser(Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return userService.selectUser(id);
     }
 
@@ -62,6 +68,9 @@ public class UserController {
     @PostMapping("/save")
     @ApiOperation("新建/修改用户")
     public String saveUser(@RequestHeader("token") String token, User user){
+        if (user.getId() < 0){
+            return responseBean.buildWarring("请求违法");
+        }
         return userService.saveUser(token, user);
     }
 
@@ -78,6 +87,9 @@ public class UserController {
     @PostMapping("/state")
     @ApiOperation("修改用户状态")
     public String updateUserState(@RequestHeader("token") String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return userService.updateUserState(token, id);
     }
 
@@ -88,7 +100,10 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_user')")
     @DeleteMapping("/delete")
     @ApiOperation("删除用户")
-    public String deleteUser(@RequestHeader("token") String token, int id){
+    public String deleteUser(@RequestHeader("token") String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return userService.deleteUser(token, id);
     }
 

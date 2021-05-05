@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import top.webra.bean.ResponseBean;
 import top.webra.service.impl.LogServiceImpl;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 public class LogController {
     @Autowired
     private LogServiceImpl logService;
+    @Autowired
+    private ResponseBean responseBean;
     /**
      * 所需参数：日志标题、时间、分类、页码
      * @return 日志列表
@@ -41,7 +44,10 @@ public class LogController {
      */
     @DeleteMapping("/delete")
     @ApiOperation("删除日志")
-    public String deleteLog(int id){
+    public String deleteLog(Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return logService.deleteLog(id);
     }
 

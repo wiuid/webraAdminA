@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import top.webra.bean.ResponseBean;
 import top.webra.pojo.Role;
 import top.webra.service.impl.RoleServiceImpl;
 
@@ -25,7 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 public class RoleController {
     @Autowired
     private RoleServiceImpl roleService;
-
+    @Autowired
+    private ResponseBean responseBean;
     /**
      * 所需参数：权限名称、权限字符、权限状态、时间、页码
      * @return 权限角色列表
@@ -45,6 +47,9 @@ public class RoleController {
     @GetMapping("/get")
     @ApiOperation("获取单个角色")
     public String getRole(Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return roleService.getRole(id);
     }
 
@@ -67,6 +72,9 @@ public class RoleController {
     @PostMapping("/save")
     @ApiOperation("新建/修改角色")
     public String saveRole(@RequestHeader("token") String token, Role role){
+        if (role.getId() < 0){
+            return responseBean.buildWarring("请求违法");
+        }
         return roleService.saveRole(token, role);
     }
 
@@ -77,7 +85,10 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_auth')")
     @DeleteMapping("/delete")
     @ApiOperation("删除角色")
-    public String deleteRole(@RequestHeader("token") String token, int id){
+    public String deleteRole(@RequestHeader("token") String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return roleService.deleteRole(token, id);
     }
 
@@ -99,7 +110,10 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_auth')")
     @PostMapping("/state")
     @ApiOperation("修改角色状态")
-    public String blockRole(@RequestHeader("token") String token, int id){
+    public String blockRole(@RequestHeader("token") String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return roleService.updateRoleSwitch(token, id);
     }
 

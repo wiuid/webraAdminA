@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import top.webra.bean.ResponseBean;
 import top.webra.pojo.Post;
 import top.webra.service.impl.PostServiceImpl;
 
@@ -25,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 public class PostController {
     @Autowired
     private PostServiceImpl postService;
+    @Autowired
+    private ResponseBean responseBean;
 
     /**
      * 所需参数：岗位名、状态、页码
@@ -45,6 +48,9 @@ public class PostController {
     @GetMapping("/get")
     @ApiOperation("获取单个岗位")
     public String getPostById(Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return postService.getPostById(id);
     }
 
@@ -66,6 +72,9 @@ public class PostController {
     @PostMapping("/save")
     @ApiOperation("新建/修改岗位")
     public String savePost(@RequestHeader("token") String token, Post post){
+        if (post.getId() < 0){
+            return responseBean.buildWarring("请求违法");
+        }
         return postService.savePost(token, post);
     }
 
@@ -77,6 +86,9 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_post')")
     @PostMapping("/state")
     public String updatePostState(@RequestHeader("token") String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return postService.updatePostState(token, id);
     }
 
@@ -87,7 +99,10 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_post')")
     @DeleteMapping("/delete")
     @ApiOperation("删除岗位")
-    public String deletePost(@RequestHeader("token") String token, int id){
+    public String deletePost(@RequestHeader("token") String token, Integer id){
+        if (id == null || id < 1){
+            return responseBean.buildWarring("请求违法");
+        }
         return postService.deletePost(token, id);
     }
 
