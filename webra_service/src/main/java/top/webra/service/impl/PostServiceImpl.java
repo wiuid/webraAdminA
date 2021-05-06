@@ -15,6 +15,7 @@ import top.webra.mapper.PostMapper;
 import top.webra.pojo.Post;
 import top.webra.service.PostService;
 import top.webra.util.JwtUtil;
+import top.webra.util.ResponseUtil;
 import top.webra.utils.RedisUtil;
 
 import javax.servlet.ServletOutputStream;
@@ -239,11 +240,7 @@ public class PostServiceImpl implements PostService {
                 row.createCell(6).setCellValue(simpleDateFormat.format(post.getUpdateDate()));
             }
             // 设置头信息
-            response.reset();
-            response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=postInfo.xls");
-            response.addHeader("Pargam", "no-cache");
-            response.addHeader("Cache-Control", "no-cache");
+            ResponseUtil.setResponse(response);
 
             // 流的形式传递数据
             ServletOutputStream outputStream = response.getOutputStream();

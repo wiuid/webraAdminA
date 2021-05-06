@@ -15,6 +15,7 @@ import top.webra.pojo.Log;
 import top.webra.service.LogService;
 import top.webra.util.CastUtil;
 import top.webra.util.JwtUtil;
+import top.webra.util.ResponseUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -132,11 +133,7 @@ public class LogServiceImpl implements LogService {
                 row.createCell(3).setCellValue(log.getText());
             }
             // 设置头信息
-            response.reset();
-            response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=logInfo.xls");
-            response.addHeader("Pargam", "no-cache");
-            response.addHeader("Cache-Control", "no-cache");
+            ResponseUtil.setResponse(response);
 
             // 流的形式传递数据
             ServletOutputStream outputStream = response.getOutputStream();

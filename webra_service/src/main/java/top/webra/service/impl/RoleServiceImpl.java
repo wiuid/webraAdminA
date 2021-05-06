@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import top.webra.bean.ResponseBean;
 import top.webra.mapper.RoleMapper;
 import top.webra.mapper.UserMapper;
@@ -18,6 +18,7 @@ import top.webra.pojo.User;
 import top.webra.service.RoleService;
 import top.webra.util.CastUtil;
 import top.webra.util.JwtUtil;
+import top.webra.util.ResponseUtil;
 import top.webra.utils.RedisUtil;
 
 import javax.servlet.ServletOutputStream;
@@ -36,6 +37,7 @@ import java.util.List;
  * @Create: 2021-03-17 16:03
  * @Description: --
  */
+@Slf4j
 @Service
 public class RoleServiceImpl implements RoleService{
 
@@ -268,6 +270,7 @@ public class RoleServiceImpl implements RoleService{
             // 循环往表中添加数据
             for (Role role : roles) {
                 HSSFRow row = sheet.createRow(rowIndex++);
+
                 row.createCell(0).setCellValue(role.getId());
                 row.createCell(1).setCellValue(role.getTitle());
                 row.createCell(2).setCellValue(role.getCode());
@@ -277,20 +280,14 @@ public class RoleServiceImpl implements RoleService{
                 row.createCell(6).setCellValue(simpleDateFormat.format(role.getCreateDate()));
                 row.createCell(7).setCellValue(simpleDateFormat.format(role.getUpdateDate()));
             }
-            // 设置头信息
-            response.reset();
-            response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=roleInfo.xls");
-            response.addHeader("Pargam", "no-cache");
-            response.addHeader("Cache-Control", "no-cache");
-
+            ResponseUtil.setResponse(response);
             // 流的形式传递数据
             ServletOutputStream outputStream = response.getOutputStream();
             workbook.write(outputStream);
             outputStream.close();
             workbook.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("导出角色信息异常");
         }
     }
 }
